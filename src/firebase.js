@@ -1,6 +1,6 @@
 // Nombre fichero: firebase.js
 // Fecha: WIP
-// Autor: Abidán Brito Clavijo
+// Autor: Jorge Grau Giannakakis
 // Descripción: Aqui se especifican todos los datos necesaros para conectar con firebase
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js'
