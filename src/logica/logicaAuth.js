@@ -1,4 +1,4 @@
-// Nombre fichero: login.js
+// Nombre fichero: logicaAuth.js
 // Fecha: WIP
 // Autor: Jorge Grau Giannakakis
 // Descripción: Gestiona la logica del registro e inicio de sesión a la pagina web
@@ -38,16 +38,11 @@ function iniciarSesion(){
   var contrasena = document.getElementById("campo_contrasena").value;
   localStorage.setItem("SesionIniciada", 1);
   firebaseAuth.signInWithEmailAndPassword(firebaseAuth.getAuth(), correo, contrasena).catch(function(error) {
-
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      
-      window.alert("Error : " + errorMessage + " Codigo de error: " + errorCode);
   });
 
   setTimeout(function(){
     location.reload();
-}, 500);
+}, 700);
   
 }
   

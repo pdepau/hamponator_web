@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Storage</title>
+  <title>Gestor de rutas</title>
 
  <!-- BOOTSWATCH -->
  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/pulse/bootstrap.min.css">
@@ -12,7 +12,7 @@
  <!-- ANIMATE CSS -->
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" />
 <!-- Custom CSS --------------------------------------------------------------------------------------->
-<link href="../ux/css/storage.css" rel="stylesheet">
+<link href="../ux/css/rutas.css" rel="stylesheet">
 
 </head>
 
@@ -28,9 +28,9 @@
             <div class="bar3"></div>
         </div>
         <ul class="nav-links">
-            <li><button id="btn-centro" href="../ux/storage.html" style="color: #edb506;">Centro de datos</button></li>
-            <li><button id="btn-alertas" href="../ux/alertas.html">Gestor de alertas</button></li>
-            <li><button id="btn-perfil" href="#Perfil">Perfil</button></li>
+            <li><button id="btn-centro" style="color: #edb506;"><a id="a-centro" href="../ux/rutas.html"> Centro de datos </a></button></li>
+            <li><button id="btn-alertas" ><a id="a-alertas" href="../ux/alertas.html"> Alertas </a></button></li>
+            <li><button id="btn-perfil" ><a id="a-perfil" href="../ux/perfil.html"> Perfil </a></button></li>
             <li><button id="btn-cerrar-sesion">Cerrar sesion</button></li>
         </ul>
       </div>
@@ -68,9 +68,9 @@
     </div>
   <!-- CUSTOM CODE -->
   <script type="module" src="../firebase.js"></script>
-  <script type="module" src="../logica/storage.js"></script>
-  <script type="module" src="../logica/login.js"></script>
-  <script type="module" src="../ux/controladores/controladorStorage.js"></script>
+  <script type="module" src="../logica/logica.js"></script>
+  <script type="module" src="../logica/logicaAuth.js"></script>
+  <script type="module" src="../ux/controladores/controladorRutas.js"></script>
 
 </body>
 

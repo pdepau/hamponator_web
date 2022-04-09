@@ -324,7 +324,7 @@ body{
   text-shadow: 0.1em 0.1em 0.05em #333;
 }
 
-#btn-cerrar-sesion:hover, #btn-centro:hover, #btn-alertas:hover, #btn-perfil:hover  {
+#btn-cerrar-sesion:hover, #a-centro:hover, #a-alertas:hover, #a-perfil:hover  {
   color: #edb506;
   cursor: pointer;
  }

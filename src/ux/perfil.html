@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Storage</title>
+
+ <!-- BOOTSWATCH -->
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/pulse/bootstrap.min.css">
+
+ <!-- ANIMATE CSS -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" />
+<!-- Custom CSS --------------------------------------------------------------------------------------->
+<link href="../ux/css/perfil.css" rel="stylesheet">
+
+</head>
+
+<body>
+  
+  <!-- Main Navigation -->
+  <nav class="main-nav" id="main-nav">
+    <div class="content-wrapper-sm">
+        <a href="#" class="navbar-brand"><img src="../ux/img/LOGO%20SIN%20FONDO.png" alt=""></a>
+        <div id="menu-button">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </div>
+        <ul class="nav-links">
+            <li><button id="btn-centro" ><a id="a-centro" href="../ux/rutas.html"> Centro de datos </a></button></li>
+            <li><button id="btn-alertas" ><a id="a-alertas" href="../ux/alertas.html"> Alertas </a></button></li>
+            <li><button id="btn-perfil" style="color: #edb506;"><a id="a-perfil" href="../ux/perfil.html"> Perfil </a></button></li>
+            <li><button id="btn-cerrar-sesion">Cerrar sesion</button></li>
+        </ul>
+      </div>
+  </nav>
+  <div id="cargarMapa">
+    <div id="divCargar">
+        <label for="myfile">Selecciona un plano:</label>
+        <input type="file" id="myfile" name="myfile " accept="image/png, image/jpeg">
+        <button type="button" id="subir" name="subir">Subir</button>
+        <div id="mapa">
+        <img id="imagen">
+      </div>      
+    </div>
+    <div id="divPassword">
+        <!-- Password field -->
+        Codgio de verificación: <input type="password" value="123456789" id="contra">
+        <!-- An element to toggle between password visibility -->
+        <input type="checkbox" id="myInput">Mostrar codigo
+    </div>
+  </div>
+
+  <!-- CUSTOM CODE -->
+  <script type="module" src="../firebase.js"></script>
+  <script type="module" src="../logica/logica.js"></script>
+  <script type="module" src="../logica/logicaAuth.js"></script>
+  <script type="module" src="../ux/controladores/controladorPerfil.js"></script>
+
+</body>
+
+</html>

@@ -4,7 +4,7 @@
 // Descripción: El controlador de la pagina del login, llama a las funciones de la logica que necesite
 
 import { firebaseAuth } from '../../firebase.js';
-import { GoogleLogin, iniciarSesion } from '../../logica/login.js'
+import { GoogleLogin, iniciarSesion } from '../../logica/logicaAuth.js'
 
 
 window.addEventListener("DOMContentLoaded", async (e) => {
@@ -22,7 +22,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         console.log(uid + "");
         localStorage.setItem("UID", uid);
   
-        location.href = '../ux/storage.html';
+        location.href = '../ux/rutas.html';
       }
       }
     });

@@ -1,4 +1,4 @@
-// Nombre fichero: storage.js
+// Nombre fichero: logica.js
 // Fecha: WIP
 // Autor: Jorge Grau Giannakakis
 // Descripción: Gestiona la logica del centro de datos
@@ -11,8 +11,13 @@ const mySidebar = document.getElementById("mySidebar");
 const main = document.getElementById("main");
 const herramientas = document.getElementById("herramientas");
 
+/**
+ * Sube datos a Firestore Storage
+ * file -> subirDatos -> 
+ */
 async function subirDatos(file){
     
+    //Comprobamos que la sesion esta iniciada
     var sesion = localStorage.getItem("SesionIniciada");
     var uid = localStorage.getItem("UID");
     
@@ -27,6 +32,8 @@ async function subirDatos(file){
     uploadBytes(storageRef, file).then((snapshot) => {
         console.log('Uploaded a blob or file!');
     });
+
+    // Subimos el archivo y llamamos a la funcion recoger imagen pasado 1 segundo
     cargarMapa.style.display = "none";
     mapa.style.display = "block";
     setTimeout(function(){
@@ -36,6 +43,39 @@ async function subirDatos(file){
     }
 }
 
+/**
+ * Sube datos a Firestore Storage
+ * file -> actualizarPlano -> 
+ */
+ async function actualizarPlano(file){
+    
+    //Comprobamos que la sesion esta iniciada
+    var sesion = localStorage.getItem("SesionIniciada");
+    var uid = localStorage.getItem("UID");
+    
+    if (sesion == 1) {
+    // Create the file metadata
+    const metadata = {
+    contentType: 'image/jpeg'
+    };
+    
+    // Upload file and metadata to the object 'images/mountains.jpg'
+    const storageRef = ref(dbStorage, 'images/'+ uid +'/Plano.jpg');
+    uploadBytes(storageRef, file).then((snapshot) => {
+        console.log('Uploaded a blob or file!');
+    });
+
+    // Subimos el archivo y mostramos la subida completada tras 1 segundo
+    setTimeout(function(){
+        alert ("Subida con exito"); 
+    }, 1000);
+    }
+}
+
+/**
+ * Recoge el plano y lo muestra
+ * -> recogerImagen -> 
+ */
 async function recogerImagen(){
     var sesion = localStorage.getItem("SesionIniciada");
     var uid = localStorage.getItem("UID");
@@ -51,6 +91,7 @@ async function recogerImagen(){
         document.querySelector("#display_image2").style.backgroundImage = `url(${url})`;
         })
         
+        // Si encuentra algun error dispone la pagina para insertar una imagen
         .catch((error) => {
             cargarMapa.style.display = "block";
             mapa.style.display = "none";
@@ -73,4 +114,4 @@ async function recogerImagen(){
         herramientas.style.display = "none";
     }
 }
-export { subirDatos, recogerImagen };
+export { subirDatos, actualizarPlano, recogerImagen };

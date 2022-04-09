@@ -1,29 +1,35 @@
-// Nombre fichero: controladorStorage.js
+// Nombre fichero: controladorRutas.js
 // Fecha: WIP
 // Autor: Jorge Grau Giannakakis
-// Descripción: El controlador de la pagina storage, llama a las funciones de la logica que necesite
+// Descripción: El controlador de la pagina rutas, llama a las funciones de la logica que necesite
 
-import { subirDatos, recogerImagen } from '../../logica/storage.js'
-import { cerrarSesion } from '../../logica/login.js'
+import { subirDatos, recogerImagen } from '../../logica/logica.js'
+import { cerrarSesion } from '../../logica/logicaAuth.js'
 
 const aceptar = document.getElementById("subir");
 const archivo = document.getElementById("myfile");
 const boton = document.getElementById("openbtn");
+const image_input = document.querySelector("#myfile");
 
 
 // Cuando la pagina cargue empezamos la funcion
 window.addEventListener("DOMContentLoaded", async (e) => {
+  // Si la sesion no esta iniciada vuelves a la landing page
   var sesion = localStorage.getItem("SesionIniciada");
   if(sesion == 0){
     location.href = '../ux/login.html';
   }
+
+  // Se llama a recoger imagen para mostrar la imagen de la base de datos
   recogerImagen();
-  const image_input = document.querySelector("#myfile");
+
   var uploaded_image;
     
+  // Escuchador del boton de cerrar sesion
   document.getElementById("btn-cerrar-sesion").addEventListener("click", () => {
   cerrarSesion()});
 
+  // La imagen que selecciones se muestra en pantalla
   image_input.addEventListener('change', function() {
     const reader = new FileReader();
     reader.addEventListener('load', () => {
@@ -33,16 +39,13 @@ window.addEventListener("DOMContentLoaded", async (e) => {
     reader.readAsDataURL(this.files[0]);
     });
 
+    // Se sube el archivo
     aceptar.addEventListener('click', async (e) => {  
-      console.log("Subiendo");
       var files = archivo.files;
       var file;
 
       for (var i = 0; i < files.length; i++) {
 
-          // get item
-          file = files.item(i);
-          //or
           file = files[i];
       
           subirDatos(file);
