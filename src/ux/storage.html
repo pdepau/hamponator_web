@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Storage</title>
+
+ <!-- BOOTSWATCH -->
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/pulse/bootstrap.min.css">
+
+ <!-- ANIMATE CSS -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" />
+<!-- Custom CSS --------------------------------------------------------------------------------------->
+<link href="../ux/css/storage.css" rel="stylesheet">
+
+</head>
+
+<body>
+  
+  <!-- Main Navigation -->
+  <nav class="main-nav" id="main-nav">
+    <div class="content-wrapper-sm">
+        <a href="#" class="navbar-brand"><img src="../ux/img/LOGO%20SIN%20FONDO.png" alt=""></a>
+        <div id="menu-button">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </div>
+        <ul class="nav-links">
+            <li><button id="btn-centro" href="../ux/storage.html" style="color: #edb506;">Centro de datos</button></li>
+            <li><button id="btn-alertas" href="../ux/alertas.html">Gestor de alertas</button></li>
+            <li><button id="btn-perfil" href="#Perfil">Perfil</button></li>
+            <li><button id="btn-cerrar-sesion">Cerrar sesion</button></li>
+        </ul>
+      </div>
+  </nav>
+  <div id="cargarMapa">
+    <div id="divCargar">
+      <label for="myfile">Selecciona un plano:</label>
+      <input type="file" id="myfile" name="myfile " accept="image/png, image/jpeg">
+      <button type="button" id="subir" name="subir">Subir</button>
+      <div id="mapa2">
+        <img id="imagen">
+      </div>      
+    </div>
+  </div>
+
+  <div id="mapa">
+    <img id="display_image2" width="100px" height="100vh">
+  </div>
+
+    <div id="mySidebar" class="sidebar">
+      
+    </div>
+
+    <div id="main">
+      <button class="openbtn" id="openbtn">&#9776;</button>
+    </div>
+
+    <div id="herramientas">
+      <button class="ruta" id="ruta">&#9776;</button>
+      <button class="foto" id="foto">&#9776;</button>
+      <button class="esperar" id="esperar">&#9776;</button>
+      <button class="borrar" id="borrar">&#9776;</button>
+      <button class="guardar" id="guardar">&#9776;</button>
+      <button class="eliminar" id="eliminar">&#9776;</button>
+    </div>
+  <!-- CUSTOM CODE -->
+  <script type="module" src="../firebase.js"></script>
+  <script type="module" src="../logica/storage.js"></script>
+  <script type="module" src="../logica/login.js"></script>
+  <script type="module" src="../ux/controladores/controladorStorage.js"></script>
+
+</body>
+
+</html>

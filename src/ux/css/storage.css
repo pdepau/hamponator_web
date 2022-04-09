@@ -1,0 +1,330 @@
+body{
+  background-color: #f7f7f7;
+}
+
+/* The sidebar menu */
+.sidebar {
+    height: 100%; /* 100% Full-height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0;
+    right: 0;
+    background-color: #111; /* Black*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 60px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+  }
+  
+  /* The sidebar links */
+  .sidebar a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+
+  /* When you mouse over the navigation links, change their color */
+.sidebar a:hover {
+    color: #f1f1f1;
+  }
+  
+  /* Position and style the close button (top right corner) */
+  .sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    left: 25px;
+    font-size: 36px;
+    margin-right: 50px;
+  }
+  
+  /* The button used to open the sidebar */
+  .openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    position: fixed;
+    right: 0;
+    top: 100px;
+    margin-right: 0px;
+  }
+  
+  .openbtn:hover {
+    background-color: #444;
+  }
+
+  #openbtn {
+    transition: margin-right .5s; /* If you want a transition effect */
+  }
+
+  #divCargar {
+    width: 80%;
+    margin: auto;
+    height: auto;
+    padding: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border: 2px solid;
+    box-shadow: 2px 1px dimgrey;
+    background-color: papayawhip;
+  }
+  
+
+  #cargarMapa {
+    display: none;
+  }
+  
+  /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+  @media screen and (max-height: 450px) {
+    .sidebar {padding-top: 15px;}
+    .sidebar a {font-size: 18px;}
+  }
+
+  body, html {
+    height: 100%;
+  }
+  
+
+  #mapa {
+
+    width: 90%;
+    margin: auto;
+    height: auto;
+
+  }
+
+  #display_image2 {
+    width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: #445c9c;
+  }
+
+  #mapa2 {
+    margin: auto;
+    height: auto;
+
+  }
+
+  #imagen {
+    width: 100%;
+    max-width: 100%;
+    height: 75vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+
+  /* The button used to open the sidebar */
+  .ruta {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #820053;
+    color: white;
+    padding: 3px 8px;
+    border: none;
+    position: fixed;
+    left: 10px;
+    top: 100px;
+    margin-right: 0px;
+    border-radius: 10px;
+    border: 3px solid black;
+  }
+
+  /* The button used to open the sidebar */
+  .foto {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #820053;
+    color: white;
+    padding: 3px 8px;
+    border: none;
+    position: fixed;
+    left: 10px;
+    top: 150px;
+    margin-right: 0px;
+    border-radius: 10px;
+    border: 3px solid black;
+  }
+
+      /* The button used to open the sidebar */
+  .esperar {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #820053;
+    color: white;
+    padding: 3px 8px;
+    border: none;
+    position: fixed;
+    left: 10px;
+    top: 200px;
+    margin-right: 0px;
+    border-radius: 10px;
+    border: 3px solid black;
+  }
+
+  /* The button used to open the sidebar */
+  .borrar {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #820053;
+    color: white;
+    padding: 3px 8px;
+    border: none;
+    position: fixed;
+    left: 10px;
+    top: 250px;
+    margin-right: 0px;
+    border-radius: 10px;
+    border: 3px solid black;
+  }
+
+  /* The button used to open the sidebar */
+  .guardar {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #820053;
+    color: white;
+    padding: 3px 8px;
+    border: none;
+    position: fixed;
+    left: 10px;
+    top: 300px;
+    margin-right: 0px;
+    border-radius: 10px;
+    border: 3px solid black;
+  }
+
+  /* The button used to open the sidebar */
+  .eliminar {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #820053;
+    color: white;
+    padding: 3px 8px;
+    border: none;
+    position: fixed;
+    left: 10px;
+    top: 350px;
+    margin-right: 0px;
+    border-radius: 10px;
+    border: 3px solid black;
+  }
+
+  .ruta:hover, .foto:hover, .esperar:hover, .borrar:hover, .guardar:hover, .eliminar:hover{
+    background-color: #edb506;
+    
+  }
+
+
+  .main-nav {
+    display: block;
+    padding: 1rem 2rem;
+    width: 100%;
+    z-index: 100;
+    -webkit-transition: background 0.3s ease-in-out;
+    transition: background 0.3s ease-in-out;
+    background: #820053;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.4);
+}
+
+.main-nav > .content-wrapper-sm {
+  display: flex;
+  justify-content: space-between;
+}
+
+.main-nav .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.main-nav .navbar-brand img {
+    width: 150px;
+}
+
+.main-nav .nav-links {
+    position: relative;
+    top: auto;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: none;
+    overflow: hidden;
+    height: 0;
+}
+
+@media (min-width: 768px) {
+    .main-nav .nav-links {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        height: auto;
+    }
+}
+
+.main-nav .nav-links li {
+    margin: 1rem;
+    text-align: center;
+}
+
+/*123456789*/
+.main-nav .nav-links li a {
+    color: #fefffe;
+    display: block;
+    text-decoration: none;
+    text-shadow: 0.1em 0.1em 0.05em #333;
+}
+
+.main-nav .nav-open {
+    position: absolute;
+    top: 133%;
+    width: 100%;
+    display: block;
+    height: auto;
+    background: #820053;
+}
+
+.main-nav .nav-open li {
+    margin: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.main-nav .nav-open li a {
+    padding: 2rem 0;
+}
+
+.BtModals:hover {
+  position:relative;
+  z-index: 8000;
+}
+
+#btn-cerrar-sesion, #btn-centro, #btn-alertas, #btn-perfil  {
+  background: #820053;
+  color: #fff;
+  border: 1px solid #820053;
+  border-radius: 5px;
+  display: block;
+  width: 100%;
+  transition: 0.3s;
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  text-shadow: 0.1em 0.1em 0.05em #333;
+}
+
+#btn-cerrar-sesion:hover, #btn-centro:hover, #btn-alertas:hover, #btn-perfil:hover  {
+  color: #edb506;
+  cursor: pointer;
+ }
