@@ -600,10 +600,22 @@ body {
 
     background: #EEE7E7;
 }
-
+.boton{
+    background: #820053;
+    width: 100px;
+    height: 40px;
+    border:none;
+    color: #ffffff;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
 .section-title {
     color: #fefffe;
     font-size: 35px;
+}
+.eleccion{
+    color: black;
 }
 
 .historia {
@@ -1010,7 +1022,7 @@ h6 {
 header {
     position: relative;
     height: 100vh;
-    color: #ffffff;
+    color: #820053;
     text-align: center;
     vertical-align: top;
     display: -webkit-box;
@@ -1027,7 +1039,7 @@ header {
     -ms-flex-align: center;
     align-items: center;
     /**/
-    background-image: url(../img/alexelcapo.jpg);
+    background-image: url(../img/alexelcapo.JPG);
 
     background-repeat: no-repeat;
     /*cambios portada*/
@@ -1036,7 +1048,7 @@ header {
 }
 
 #nosotros {
-    background-image: url(../img/foto_historia.jpeg);
+    background-image: url(../img/IMG_9358.JPG);
     background-size: cover;
     background-position: center;
 }
@@ -1078,7 +1090,7 @@ header h1 {
 }
 
 .pau {
-    margin-bottom: 270px;
+   /* margin-bottom: 270px;*/
 }
 
 @media (min-width: 544px) {
@@ -1098,7 +1110,7 @@ header h1 {
     }
 
     header h2 {
-        margin-bottom: 500px;
+       /* margin-bottom: 500px;*/
         margin-top: -40px;
     }
 }
@@ -1107,6 +1119,10 @@ header h2 {
     font-weight: 300;
     font-size: 1.5rem;
 
+}
+.contactar{
+    text-decoration: none;
+    color: #ffffff;
 }
 
 /*-------------------tarjetas porque elegirnos-----------------*/
@@ -1392,33 +1408,11 @@ Landing
     z-index: 2;
 }
 
-.imagen-tarjeta_1 {
-    background-image: url('../img/persona_novatest.jpg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    font-family: 'Gloria Hallelujah', cursive;
-    grid-column: 2 / span 4;
-    grid-row: 2 / span 8;
-    margin: 2em;
-    text-align: center;
-    z-index: 3;
-}
 
-.imagen-tarjeta_2 {
-    background-image: url('../img/imagen_dgt.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    font-family: 'Gloria Hallelujah', cursive;
-    grid-column: 2 / span 4;
-    grid-row: 2 / span 8;
-    margin: 2em;
-    text-align: center;
-    z-index: 3;
-}
 
 /*123456789*/
 .imagen-tarjeta_3 {
-    background-image: url('../img/prueba.jpeg');
+    background-image: url('../img/IMG_9277.JPG');
     background-size: contain;
     background-repeat: no-repeat;
     font-family: 'Gloria Hallelujah', cursive;
@@ -1448,6 +1442,7 @@ Landing
     grid-column: 5 / span 5;
     grid-row: 2 / span 8;
     margin: 2em;
+    margin-left: 5em;
     z-index: 3;
 }
 
