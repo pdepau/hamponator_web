@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <style>
+        #div1,
+        #div2,
+        #div3 {
+            width: 350px;
+            height: 70px;
+            padding: 10px;
+            border: 1px solid #aaaaaa;
+        }
+    </style>
+    <script>
+
+        let desde_id
+        let desde_evento
+        let hasta_id
+        let hasta_evento
+        let hasta_data
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            hasta_data = ev.dataTransfer.setData("text", ev.target.id);
+            console.log(ev)
+
+            desde_id = ev.path[1]
+            desde_evento = ev
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            console.log(ev)
+
+            if (ev.path.length <= 5) {
+                ev.target.appendChild(document.getElementById(data));
+
+            } else {
+                hasta_id = ev.path[0]
+                hasta_evento = ev
+
+                let aux = ev.dataTransfer.getData("text");
+
+                ev.target.appendChild(document.getElementById(data));
+                //desde_evento.target.appendChild(document.getElementById(aux));
+                desde_evento.target.appendChild(document.getElementById(hasta_data));
+            }
+
+        }
+    </script>
+</head>
+
+<body>
+
+    <p>Drag the W3Schools image into the rectangle:</p>
+
+    <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+    <div id="div2" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+    <div id="div3" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+    <br>
+    <img id="drag1" src="img_logo.gif" draggable="true" ondragstart="drag(event)" width="336" height="69">
+    <img id="drag2" src="img_logo.gif" draggable="true" ondragstart="drag(event)" width="136" height="69">
+    <img id="drag3" src="img_logo.gif" draggable="true" ondragstart="drag(event)" width="236" height="69">
+
+</body>
+
+</html>

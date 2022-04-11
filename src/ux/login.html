@@ -1,0 +1,26 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="../ux/css/login.css" />
+</head>
+<body>
+
+  <div id="login_div" class="main-div">
+    <h3>Introduce tus datos</h3>
+    <form>
+      <input type="email" placeholder="Email..." id="campo_correo" />
+      <input type="password" placeholder="Contraseña..." id="campo_contrasena" />
+    </form>
+
+    <button id = "btn-iniciar-sesion">Iniciar sesión</button>
+    <button id = "btn-iniciar-sesion-google"> Iniciar sesión con google </button>
+  </div>
+
+  <!-- CUSTOM CODE -->
+  <script type="module" src="../firebase.js"></script>
+  <script type="module" src="../logica/logica.js"></script>
+  <script type="module" src="../logica/logicaAuth.js"></script>
+  <script type="module" src="../ux/controladores/controladorLogin.js"></script>
+</body>
+</html>
