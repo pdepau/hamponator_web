@@ -229,6 +229,16 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         for(var i = 0; i < cosicasDeBorrar.length; i++){
           delete orden[cosicasDeBorrar[i]];
         }
+
+        for(var i = 0; i < cosicasDeBorrar.length; i++){
+
+          var text = cosicasDeBorrar[i];
+          for(var j = 0; j < ordenDeAcciones.length; j++){
+            if(text == ordenDeAcciones[j]){
+              ordenDeAcciones.splice(j, 1);
+            }
+          }
+        }
         
         reDibujarPlano(c,ctx, orden);
         console.log(orden);

@@ -3,7 +3,7 @@
 // Autor: Jorge Grau Giannakakis
 // Descripción: Gestiona la logica del centro de datos
 
-import {dbStorage, database, getStorage, ref, uploadBytes, getDownloadURL, firebaseAuth, setDoc, doc, set, db, storageRef} from '../firebase.js';
+import {dbStorage, database, getStorage, ref, uploadBytes, getDownloadURL, firebaseAuth, setDoc, doc, set, db, storageRef, collection, query, where, getDocs} from '../firebase.js';
 
 const mapa = document.getElementById("mapa");
 const cargarMapa = document.getElementById("cargarMapa");
@@ -195,6 +195,14 @@ async function subirRuta(orden, ordenDeAcciones, canvas){
     let result = "";
     var subida = [];
 
+    let JSON = {
+        time: new Date().getTime(),
+        msg:[
+            
+        ]
+    
+    }
+
     for(var i = 0; i < ordenDeAcciones.length; i++){
 
         result = ordenDeAcciones[i].slice(0, 1);
@@ -204,23 +212,60 @@ async function subirRuta(orden, ordenDeAcciones, canvas){
         if(result == "F"){
             var puntos = orden[ordenDeAcciones[i]];
             
+            let punto ={
+                tipo: "foto",
+                posicion: {
+                    x: (puntos[0]/10),
+                    y: (puntos[1]/10)
+                },
+                orientacion: {
+                    x: (puntos[2]/10),
+                    y: (puntos[3]/10)
+                }
+            }
+
+            JSON.msg.push(punto);
+
+            /*
             let text = '{ '+ ordenDeAcciones[i] +' : [' +
             '{ "posicionX":'+ (puntos[0]/10) +' , "posicionY":'+ (puntos[1]/10) +' },' +
-            '{ "orientacionX":'+ (puntos[2]/10) +' , "orientacionY":'+ (puntos[3]/10) +' }]}';
+            '{ "orientacionX":'+ (puntos[2]/10) +' , "orientacionY":'+ (puntos[3]/10) +']}';
             console.log(text);
-            subida.push(text);
+            */
+            //subida.push(text);
         }
 
         else if(result == "R"){
+
+            let punto ={
+                tipo: "ruta",
+                posiciones: [
+
+                ]
+            }
+
             var puntos = orden[ordenDeAcciones[i]];
 
             let text = '{ '+ ordenDeAcciones[i] +' : [';
             for(var j = 0; j < puntos.length; j = j+2){
-                text+='{ "posicionX":'+ (puntos[j]/10) +' , "posicionY":'+ (puntos[j+1]/10) +' },';
+
+                let pos = {
+                    x: (puntos[j]/10) , 
+                    y: (puntos[j+1]/10)
+                }
+
+                punto.posiciones.push(pos)
+
+                //text+='{ "posicionX":'+ (puntos[j]/10) +' , "posicionY":'+ (puntos[j+1]/10) +' },';
             }
-            text+=' }]}';
+            //text+=']}';
+            
             console.log(text);
             subida.push(text);
+
+
+
+            JSON.msg.push(punto);
         }
     }
 
@@ -232,11 +277,27 @@ async function subirRuta(orden, ordenDeAcciones, canvas){
         orden: ordenDeAcciones
      });
 
-     set(storageRef(database, 'hampo'), {
-        tipo: "Envio",
-        JSON: subida,
-        orden: ordenDeAcciones
-     });
+    var uid = localStorage.getItem("UID");
+    const q = query(collection(db, "Empresas"), where('UID', '==', uid));
+        // Obtenemos los documentos en forma de objetos DocumentSnapshots
+    await getDocs(q).then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+            let value = doc.data();
+            console.log(Object.values(value));
+            let objeto = Object.values(value);
+            for(var i = 0; i<objeto.length; i++){
+                if(Number.isInteger(objeto[i])){
+                    var codigoVer = objeto[i];
+                }
+            }
+
+            set(storageRef(database, +codigoVer+'-web/'), JSON);
+            
+        })
+        return;
+    }).catch(e => {
+        console.log(e);
+    });
       
 }
 
