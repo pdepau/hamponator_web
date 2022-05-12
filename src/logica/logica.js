@@ -3,7 +3,7 @@
 // Autor: Jorge Grau Giannakakis
 // Descripción: Gestiona la logica del centro de datos
 
-import {dbStorage, getStorage, ref, uploadBytes, getDownloadURL, firebaseAuth} from '../firebase.js';
+import {dbStorage, database, getStorage, ref, uploadBytes, getDownloadURL, firebaseAuth, setDoc, doc, set, db, storageRef} from '../firebase.js';
 
 const mapa = document.getElementById("mapa");
 const cargarMapa = document.getElementById("cargarMapa");
@@ -114,4 +114,130 @@ async function recogerImagen(){
         herramientas.style.display = "none";
     }
 }
-export { subirDatos, actualizarPlano, recogerImagen };
+
+function dibujarRuta(canvas, event, ctx, puntos){
+    let width = canvas.offsetWidth;
+    let height = canvas.offsetHeight;
+    let rect = canvas.getBoundingClientRect();
+    let x = ((event.clientX - rect.left)/width)*1000;
+    let y = ((event.clientY - rect.top)/height)*1000;
+
+    puntos.push(x);
+    puntos.push(y);
+
+    //console.log("Coordinate x: " + x, "Coordinate y: " + y);
+    ctx.fillStyle = '#f00';
+    ctx.lineTo(x,y);
+    ctx.stroke();
+}
+
+function dibujarCirculo(canvas, event, ctx, punto){
+    let width = canvas.offsetWidth;
+    let height = canvas.offsetHeight;
+    let rect = canvas.getBoundingClientRect();
+    let x = ((event.clientX - rect.left)/width)*1000;
+    let y = ((event.clientY - rect.top)/height)*1000;
+
+    punto.push(x);
+    punto.push(y);
+
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, 10);
+    ctx.fill();
+}
+
+function reDibujarPlano(canvas, ctx, orden){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    var keys = Object.keys(orden);
+    var punticos = [];
+    console.log(keys.length);
+    let result = "";
+    
+    for(var i = 0; i < keys.length; i++){
+
+        result = keys[i].slice(0, 1);
+        console.log(keys[i]);
+        // Si es una foto
+        if(result == "F"){
+            ctx.beginPath();
+            console.log("Entro foto");
+            punticos = orden[keys[i]];
+            for(var j = 0; j < punticos.length; j = j+2){
+                ctx.arc(punticos[j], punticos[j+1], 5, 0, 10);
+            }
+            ctx.closePath();
+            ctx.fill();
+            
+        }
+
+        else if(result == "R"){
+
+            ctx.beginPath();
+            console.log("Entro ruta");
+            punticos = orden[keys[i]];
+            ctx.moveTo(punticos[0], punticos[1])
+            for(var j = 2; j < punticos.length; j = j+2){
+                ctx.lineTo(punticos[j], punticos[j+1]);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            
+        }
+    }
+    
+}
+
+async function subirRuta(orden, ordenDeAcciones, canvas){
+
+    var keys = Object.keys(orden);
+    console.log(keys.length);
+    let result = "";
+    var subida = [];
+
+    for(var i = 0; i < ordenDeAcciones.length; i++){
+
+        result = ordenDeAcciones[i].slice(0, 1);
+        console.log(ordenDeAcciones[i]);
+
+        // Si es una foto
+        if(result == "F"){
+            var puntos = orden[ordenDeAcciones[i]];
+            
+            let text = '{ '+ ordenDeAcciones[i] +' : [' +
+            '{ "posicionX":'+ (puntos[0]/10) +' , "posicionY":'+ (puntos[1]/10) +' },' +
+            '{ "orientacionX":'+ (puntos[2]/10) +' , "orientacionY":'+ (puntos[3]/10) +' }]}';
+            console.log(text);
+            subida.push(text);
+        }
+
+        else if(result == "R"){
+            var puntos = orden[ordenDeAcciones[i]];
+
+            let text = '{ '+ ordenDeAcciones[i] +' : [';
+            for(var j = 0; j < puntos.length; j = j+2){
+                text+='{ "posicionX":'+ (puntos[j]/10) +' , "posicionY":'+ (puntos[j+1]/10) +' },';
+            }
+            text+=' }]}';
+            console.log(text);
+            subida.push(text);
+        }
+    }
+
+    console.log(subida);
+    // Add a new document in collection "cities"
+    await setDoc(doc(db, "pruebas", "orden"), {
+        tipo: "Envio",
+        JSON: subida,
+        orden: ordenDeAcciones
+     });
+
+     set(storageRef(database, 'hampo'), {
+        tipo: "Envio",
+        JSON: subida,
+        orden: ordenDeAcciones
+     });
+      
+}
+
+export { subirDatos, actualizarPlano, recogerImagen, dibujarRuta, dibujarCirculo, reDibujarPlano, subirRuta };

@@ -63,7 +63,7 @@ function cerrarSesion(){
 function GoogleLogin(){
 
   let provider = new firebaseAuth.GoogleAuthProvider();
-
+  localStorage.setItem("SesionIniciada", 1);
   firebaseAuth.signInWithPopup(firebaseAuth.getAuth(), provider).then(res=>{
   }).catch(e=>{
     console.log(e)

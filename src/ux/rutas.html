@@ -41,13 +41,13 @@
       <input type="file" id="myfile" name="myfile " accept="image/png, image/jpeg">
       <button type="button" id="subir" name="subir">Subir</button>
       <div id="mapa2">
-        <img id="imagen">
+        <canvas id="imagen">
       </div>      
     </div>
   </div>
 
   <div id="mapa">
-    <img id="display_image2" width="100px" height="100vh">
+    <canvas id="display_image2" class= "canvas" width="1000px" height="1000px">
   </div>
 
     <div id="mySidebar" class="sidebar">
@@ -59,18 +59,20 @@
     </div>
 
     <div id="herramientas">
-      <button class="ruta" id="ruta">&#9776;</button>
-      <button class="foto" id="foto">&#9776;</button>
-      <button class="esperar" id="esperar">&#9776;</button>
-      <button class="borrar" id="borrar">&#9776;</button>
-      <button class="guardar" id="guardar">&#9776;</button>
-      <button class="eliminar" id="eliminar">&#9776;</button>
+      <button class="ruta" id="ruta"><img src="../ux/img/route-solid.svg"></button>
+      <button class="foto" id="foto"><img src="../ux/img/camera-solid.svg"></button>
+      <button class="esperar" id="esperar"><img src="../ux/img/circle-pause-solid.svg"></button>
+      <button class="guardar" id="guardar"><img src="../ux/img/floppy-disk-solid.svg"></button>
+      <button class="eliminar" id="eliminar"><img src="../ux/img/trash-can-solid.svg"></button>
+      <button class="borrar" id="borrar"><img src="../ux/img/eraser-solid.svg"></button>
+
     </div>
   <!-- CUSTOM CODE -->
   <script type="module" src="../firebase.js"></script>
   <script type="module" src="../logica/logica.js"></script>
   <script type="module" src="../logica/logicaAuth.js"></script>
   <script type="module" src="../ux/controladores/controladorRutas.js"></script>
+
 
 </body>
 
