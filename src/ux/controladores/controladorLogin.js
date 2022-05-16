@@ -3,8 +3,8 @@
 // Autor: Jorge Grau Giannakakis
 // Descripción: El controlador de la pagina del login, llama a las funciones de la logica que necesite
 
-import { firebaseAuth } from '../../firebase.js';
-import { GoogleLogin, iniciarSesion } from '../../logica/logicaAuth.js'
+import { firebaseAuth, db, collection, query, where, getDocs } from '../../firebase.js';
+import { iniciarSesion } from '../../logica/logicaAuth.js'
 
 
 window.addEventListener("DOMContentLoaded", async (e) => {
@@ -17,12 +17,10 @@ window.addEventListener("DOMContentLoaded", async (e) => {
     console.log(sesion);
     if (user) {
       if(sesion == 1){
-        console.log("Hola2")
         var uid = user.uid;
         console.log(uid + "");
         localStorage.setItem("UID", uid);
-  
-        location.href = '../ux/rutas.html';
+        recogerCodigo();
       }
       }
     });
@@ -31,7 +29,33 @@ window.addEventListener("DOMContentLoaded", async (e) => {
 
 function addButtonEventListeners() {
   document.getElementById("btn-iniciar-sesion").addEventListener("click", () => {
-    iniciarSesion()});
-  document.getElementById("btn-iniciar-sesion-google").addEventListener("click", () => {
-    GoogleLogin()});
+  iniciarSesion()});
+}
+
+async function recogerCodigo(){
+  var uid = localStorage.getItem("UID");
+    const q = query(collection(db, "Empresas"), where('UID', '==', uid));
+        // Obtenemos los documentos en forma de objetos DocumentSnapshots
+    await getDocs(q).then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+            let value = doc.data();
+            console.log(Object.values(value));
+            let objeto = Object.values(value);
+            for(var i = 0; i<objeto.length; i++){
+                if(Number.isInteger(objeto[i])){
+                    var codigoVer = objeto[i];
+                    localStorage.setItem("CodigoVer", codigoVer);
+                }
+            }
+            
+        })
+
+        var codigo = localStorage.getItem("CodigoVer");
+        if(codigo != null){
+        location.href = '../ux/rutas.html';
+        }
+        return;
+    }).catch(e => {
+        console.log(e);
+    });
 }

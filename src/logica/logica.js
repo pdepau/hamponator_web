@@ -3,7 +3,7 @@
 // Autor: Jorge Grau Giannakakis
 // Descripción: Gestiona la logica del centro de datos
 
-import {dbStorage, database, getStorage, ref, uploadBytes, getDownloadURL, firebaseAuth, setDoc, doc, set, db, storageRef, collection, query, where, getDocs} from '../firebase.js';
+import {dbStorage, database, getStorage, ref, uploadBytes, getDownloadURL, firebaseAuth, setDoc, doc, set, db, storageRef, collection, query, where, getDocs, get, child} from '../firebase.js';
 
 const mapa = document.getElementById("mapa");
 const cargarMapa = document.getElementById("cargarMapa");
@@ -328,4 +328,120 @@ async function subirRuta(orden, ordenDeAcciones, canvas){
       
 }
 
-export { subirDatos, actualizarPlano, recogerImagen, dibujarRuta, dibujarCirculo, reDibujarPlano, subirRuta };
+async function recogerRuta(){
+
+    const dbRef = storageRef(database);
+    var codigoVer = localStorage.getItem("CodigoVer");
+    get(child(dbRef, codigoVer+'-web/')).then((snapshot) => {
+    if (snapshot.exists()) {
+        console.log(snapshot.val());
+        // Aqui hacemos lo de convertir los datos a la lista de orden
+    } else {
+        console.log("No data available");
+    }
+    }).catch((error) => {
+    console.error(error);
+    });
+      
+}
+
+async function recogerAlertas(body){
+    // Hace una busqueda en la base de datos y recibe una lista de las alertas
+
+    var alertas = ["Test 1", "Test 2", "testFinal"];
+    crearAlertas(alertas, body);
+}
+
+function crearAlertas(alertas, body){
+
+    if(alertas != null){
+        var lista = [];
+        for(var i = 0; i < alertas.length; i++){
+            lista.push(0);
+            var text = "Alerta" + i;
+            var element = document.createElement(text);
+
+            element.innerHTML =  `  <div class="padre" id=${text}>
+                                    <div class="barraSuperior">
+                                    <div class="titulo">
+                                        <p class = "blanco">Alerta ${i+1}</p>
+                                    </div>
+                                    <button class="botonAceptar" onclick="aceptar(${i})"> 
+                                        <p class = "blanco">Añadir al informe</p>
+                                    </button>
+                                    <button class="botonDenegar" onclick="falsaAlarma(${i})">
+                                        <p class = "blanco"> Falsa alarma </p>
+                                    </button>
+                                    </div>
+                                    <div class="contenido">
+                                    <div class="imagen">
+                                
+                                    </div>
+                                    <div class="prediccion">
+                                    ${alertas[i]}
+                                    </div>
+                                    </div>
+                                </div>`;
+            document.body.appendChild(element);
+        }
+
+        localStorage.setItem("alertas", lista);
+    }
+}
+
+function actualizarOrden(ordenDeAcciones){
+
+    const collection = document.getElementById("orden");
+
+    //collection.remove();
+
+    
+    const sideBar = document.getElementById("mySidebar");
+
+    for(var i = 0; i < ordenDeAcciones.length; i++){
+
+        var result = ordenDeAcciones[i].slice(0, 1);
+
+        if(result == "F"){
+            var text = ordenDeAcciones[i];
+            const collection = document.getElementById(text);
+
+            if(collection!=null){
+                collection.remove();
+            }
+
+        
+
+        
+            var element = document.createElement(text);
+    
+            element.innerHTML = `<div class = "orden" id=${text}>
+                                    <img src="../ux/img/camera-solid.svg" alt="icono" class = "imagen">
+                                    <p class = "texto">${text}</p>
+                                </div>`;
+            sideBar.appendChild(element);
+        }
+
+        if(result == "R"){
+            console.log("aaa");
+            var text = ordenDeAcciones[i];
+            const collection = document.getElementById(text);
+
+            if(collection!=null){
+                collection.remove();
+            }
+
+        
+            var element = document.createElement(text);
+    
+            element.innerHTML = `<div class = "orden" id=${text}>
+                                    <img src="../ux/img/route-solid.svg" alt="icono" class = "imagen">
+                                    <p class = "texto">${text}</p>
+                                </div>`;
+            sideBar.appendChild(element);
+        }
+
+    }
+}
+
+export { subirDatos, actualizarPlano, recogerImagen, dibujarRuta, dibujarCirculo, reDibujarPlano, subirRuta, recogerRuta, recogerAlertas, actualizarOrden};

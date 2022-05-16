@@ -5,7 +5,7 @@
 
 import { initializeApp} from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js'
 import { getFirestore, collection, query, where, getDocs, doc, setDoc} from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js'
-import { getDatabase, set, ref as storageRef} from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js'
+import { getDatabase, set, get, child, ref as storageRef} from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js'
 import * as firebaseAuth from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"
 import { getStorage, ref, uploadBytes, getDownloadURL} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
 
@@ -33,4 +33,4 @@ const dbStorage = getStorage(app);
 
 const database = getDatabase(app);
 
-export { db, dbStorage, database, collection, query, where, getDocs, firebaseAuth, getStorage, ref, uploadBytes, getDownloadURL, setDoc, doc, set, storageRef};
+export { db, dbStorage, database, collection, query, where, getDocs, firebaseAuth, getStorage, ref, uploadBytes, getDownloadURL, setDoc, doc, set, storageRef, get, child};

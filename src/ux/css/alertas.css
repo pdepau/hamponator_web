@@ -1,0 +1,97 @@
+.padre{
+    margin: auto;
+    margin-top: 1%;
+    width:80%;
+    height:40vh;
+}
+
+.barraSuperior{
+    background-color:#820053;
+    width:100%;
+    height:20%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    vertical-align: middle;
+
+}
+
+.titulo{
+    width:70%;
+    height:100%;
+    text-align: center;
+
+}
+
+.botonAceptar{
+    background-color:green;
+    width:15%;
+    height:100%;
+    border: none;
+
+}
+
+.botonDenegar{
+    background-color:red;
+    width:15%;
+    height:100%;
+    border: none;
+
+}
+
+.contenido{
+    background-color:gainsboro;
+    width:100%;
+    height:80%;
+    display: flex;
+
+}
+
+.imagen {
+    width:50%;
+    height:100%;
+}
+
+.prediccion{
+    width:50%;
+    height:100%;
+    text-align: center;
+    
+}
+
+.blanco{
+  color: white;
+}
+
+.tituloPdf{
+    background-color:gainsboro;
+    margin: auto;
+    margin-top: 1%;
+    width:80%;
+    height:10vh;
+}
+
+.contenidoPdf{
+    background-color:gainsboro;
+    margin: auto;
+    margin-top: 1%;
+    width:80%;
+    height:60vh;
+}
+
+.finalPdf{
+  background-color:gainsboro;
+  margin: auto;
+  margin-top: 1%;
+  width:80%;
+  height:10vh;
+  display: flex;
+}
+.fecha{
+  width:80%;
+  height:100%;
+}
+.descarga{
+  width:20%;
+  height:100%;
+}

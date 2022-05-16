@@ -3,7 +3,7 @@
 // Autor: Jorge Grau Giannakakis
 // Descripción: El controlador de la pagina rutas, llama a las funciones de la logica que necesite
 
-import { subirDatos, recogerImagen, dibujarRuta, dibujarCirculo, reDibujarPlano, subirRuta} from '../../logica/logica.js'
+import { subirDatos, recogerImagen, dibujarRuta, dibujarCirculo, reDibujarPlano, subirRuta, recogerRuta, actualizarPlano, actualizarOrden} from '../../logica/logica.js'
 import { cerrarSesion } from '../../logica/logicaAuth.js'
 
 const aceptar = document.getElementById("subir");
@@ -29,11 +29,6 @@ var cosicasDeBorrar = [];
 
 var ordenDeAcciones = [];
 
-// orden["Ruta1"] = puntos;
-// orden["Foto1"] = punto;
-// orden["Ruta2"] = puntos;
-// orden["Esperar1"] = punto;
-
 const ruta = document.getElementById("ruta");
 const foto = document.getElementById("foto");
 const pausa = document.getElementById("esperar");
@@ -45,8 +40,13 @@ const eliminar = document.getElementById("eliminar");
 window.addEventListener("DOMContentLoaded", async (e) => {
   // Si la sesion no esta iniciada vuelves a la landing page
   var sesion = localStorage.getItem("SesionIniciada");
+  var codigoVer = localStorage.getItem("CodigoVer");
   if(sesion == 0){
     location.href = '../ux/login.html';
+  }
+
+  if(codigoVer.length == 9){
+    recogerRuta();
   }
 
   // Se llama a recoger imagen para mostrar la imagen de la base de datos
@@ -113,6 +113,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
           puntos = [];
           nRuta++;
           console.log(orden);
+          actualizarOrden(ordenDeAcciones);
         }
         resetHerramientas();
       }
@@ -133,6 +134,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         punto = [];
         nRuta++;
         console.log(orden);
+        actualizarOrden(ordenDeAcciones);
         resetHerramientas();
       }
     });
@@ -152,6 +154,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
           ordenDeAcciones.push(texto);
           punto = [];
           nRuta++;
+          actualizarOrden(ordenDeAcciones);
           console.log(orden);
         }
         resetHerramientas();
@@ -184,6 +187,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
       ctx.clearRect(0, 0, c.width, c.height);
       orden = {};
       ordenDeAcciones = [];
+      actualizarOrden(ordenDeAcciones);
     });
 
     let canvasElem = document.querySelector(".canvas");
@@ -191,6 +195,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
     {
       if(rutaActivada){
         dibujarRuta(canvasElem, e, ctx, puntos);
+        actualizarOrden(ordenDeAcciones);
       }
       if(fotoActivada){
         contador++;
@@ -203,6 +208,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
           punto = [];
           nRuta++;
           console.log(orden);
+          actualizarOrden(ordenDeAcciones);
           resetHerramientas();
         }
       }
@@ -235,6 +241,12 @@ window.addEventListener("DOMContentLoaded", async (e) => {
           var text = cosicasDeBorrar[i];
           for(var j = 0; j < ordenDeAcciones.length; j++){
             if(text == ordenDeAcciones[j]){
+              var text = ordenDeAcciones[j];
+              const collection = document.getElementById(text);
+
+              if(collection!=null){
+                  collection.remove();
+              }
               ordenDeAcciones.splice(j, 1);
             }
           }
@@ -244,6 +256,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         console.log(orden);
         console.log(ordenDeAcciones);
         cosicasDeBorrar = [];
+        actualizarOrden(ordenDeAcciones);
         
       }
     });
@@ -259,4 +272,5 @@ function resetHerramientas(){
   foto.style.backgroundColor = '#820053';
   pausa.style.backgroundColor = '#820053';
   borrar.style.backgroundColor = '#820053';
+  actualizarOrden(ordenDeAcciones);
 }

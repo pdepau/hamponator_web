@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Storage</title>
+  <title>Gestor de alertas</title>
 
  <!-- BOOTSWATCH -->
  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/pulse/bootstrap.min.css">
@@ -12,11 +12,18 @@
  <!-- ANIMATE CSS -->
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" />
 <!-- Custom CSS --------------------------------------------------------------------------------------->
-<link href="../ux/css/storage.css" rel="stylesheet">
+<link href="../ux/css/rutas.css" rel="stylesheet">
+<link href="../ux/css/alertas.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
 
 </head>
 
-<body>
+<body id="body">
+
+  <script type="module" src="../firebase.js"></script>
+  <script type="module" src="../logica/logica.js"></script>
+  <script type="module" src="../ux/controladores/controladorAlertas.js"></script>
+  <script type="text/javascript" src="../ux/controladores/controladorAlertasHTML.js"></script>
   
   <!-- Main Navigation -->
   <nav class="main-nav" id="main-nav">
@@ -28,22 +35,110 @@
             <div class="bar3"></div>
         </div>
         <ul class="nav-links">
-            <li><a href="../ux/storage.html">Centro de datos</a></li>
-            <li><a href="../ux/alertas.html">Gestor de alertas</a></li>
-            <li><a href="#Ajustes">Ajustes</a></li>
-            <li><a href="#CerrarSesion">Cerrar sesion</a></li>
+            <li><button id="btn-centro" style="color: #edb506;"><a id="a-centro" href="../ux/rutas.html"> Centro de datos </a></button></li>
+            <li><button id="btn-alertas" ><a id="a-alertas" href="../ux/alertas.html"> Alertas </a></button></li>
+            <li><button id="btn-perfil" ><a id="a-perfil" href="../ux/perfil.html"> Perfil </a></button></li>
+            <li><button id="btn-cerrar-sesion">Cerrar sesión</button></li>
         </ul>
       </div>
   </nav>
-  
-  <div id="alertas">
-    <div>
-        
+<!--
+  <div class="padre">
+    <div class="barraSuperior">
+      <div class="titulo">
+        <p class = "blanco">Alerta X</p>
+      </div>
+      <button class="botonAceptar">
+        <p class = "blanco">Añadir al informe</p>
+      </button>
+      <button class="botonDenegar">
+        <p class = "blanco"> Falsa alarma </p>
+      </button>
+    </div>
+    <div class="contenido">
+      <div class="imagen">
+
+      </div>
+      <div class="prediccion">
+
+      </div>
     </div>
   </div>
 
-  <!-- CUSTOM CODE -->
-  <script type="module" src="../firebase.js"></script>
+
+  <div class = "tituloPdf">
+  
+  </div>
+  
+  <div class = "contenidoPdf">
+  
+  </div>
+  
+  <div class = "finalPdf">
+    <p class = "fecha">
+    7/7/5
+    </p>
+    <button class = "descarga">
+    Descarga
+    </button>
+  </div>
+
+    -->
+    <a href="javascript:demoFromHTML()" class="button">Run Code</a>
+    <div id="content" style="display: none;">
+        <h1>  
+            We support special element handlers. Register them with jQuery-style.
+        </h1>
+    </div>
+
+
+  <script>
+        function aceptar(i){
+          destruir(i, 1);
+        }
+        function falsaAlarma(i){
+          destruir(i, 2);
+        }
+        function demoFromHTML() {
+        var pdf = new jsPDF('p', 'pt', 'letter');
+        // source can be HTML-formatted string, or a reference
+        // to an actual DOM element from which the text will be scraped.
+        source = document.getElementById("content");
+
+        // we support special element handlers. Register them with jQuery-style 
+        // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+        // There is no support for any other type of selectors 
+        // (class, of compound) at this time.
+        specialElementHandlers = {
+            // element with id of "bypass" - jQuery style selector
+            '#bypassme': function (element, renderer) {
+                // true = "handled elsewhere, bypass text extraction"
+                return true
+            }
+        };
+        margins = {
+            top: 80,
+            bottom: 60,
+            left: 40,
+            width: 522
+        };
+        // all coords and widths are in jsPDF instance's declared units
+        // 'inches' in this case
+        pdf.fromHTML(
+            source, // HTML string or DOM elem ref.
+            margins.left, // x coord
+            margins.top, { // y coord
+                'width': margins.width, // max width of content on PDF
+                'elementHandlers': specialElementHandlers
+            },function (dispose) {
+                // dispose: object with X, Y of the last line add to the PDF 
+                //          this allow the insertion of new lines after html
+                pdf.save('Test.pdf');
+            }, margins
+        );
+    }
+  </script>
+
 
 </body>
 
