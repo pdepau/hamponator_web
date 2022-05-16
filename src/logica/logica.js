@@ -73,6 +73,33 @@ async function subirDatos(file){
 }
 
 /**
+ * Recoge cada varios segundos el mensaje del realtime y si es nuevo guarda su imagen en storage
+ */
+function startImageService() {
+    setInterval(function waitForImage() {
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        // TODO: debe utilizar la ID del robot
+        fetch(Constants.url + `123456789-app.json`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            try {
+                actualizarPlano(result.msg[0].image)
+            } catch (error) {
+                console.error(error);
+            }
+        })
+        .catch(error => console.error(error));
+    }, 5000);
+}
+
+// Al declarar la funcion, empieza su ejecucion
+startImageService();
+
+/**
  * Recoge el plano y lo muestra
  * -> recogerImagen -> 
  */
