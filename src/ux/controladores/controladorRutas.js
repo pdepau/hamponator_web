@@ -46,7 +46,8 @@ window.addEventListener("DOMContentLoaded", async (e) => {
   }
 
   if(codigoVer.length == 9){
-    recogerRuta();
+    recogerRuta(orden, ordenDeAcciones, c, ctx);
+    nRuta = localStorage.getItem("nRuta");
   }
 
   // Se llama a recoger imagen para mostrar la imagen de la base de datos
@@ -112,7 +113,6 @@ window.addEventListener("DOMContentLoaded", async (e) => {
           ordenDeAcciones.push(texto);
           puntos = [];
           nRuta++;
-          console.log(orden);
           actualizarOrden(ordenDeAcciones);
         }
         resetHerramientas();
@@ -133,7 +133,6 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         ordenDeAcciones.push(texto);
         punto = [];
         nRuta++;
-        console.log(orden);
         actualizarOrden(ordenDeAcciones);
         resetHerramientas();
       }
@@ -155,7 +154,6 @@ window.addEventListener("DOMContentLoaded", async (e) => {
           punto = [];
           nRuta++;
           actualizarOrden(ordenDeAcciones);
-          console.log(orden);
         }
         resetHerramientas();
       }
@@ -207,7 +205,6 @@ window.addEventListener("DOMContentLoaded", async (e) => {
           ordenDeAcciones.push(texto);
           punto = [];
           nRuta++;
-          console.log(orden);
           actualizarOrden(ordenDeAcciones);
           resetHerramientas();
         }
@@ -253,8 +250,6 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         }
         
         reDibujarPlano(c,ctx, orden);
-        console.log(orden);
-        console.log(ordenDeAcciones);
         cosicasDeBorrar = [];
         actualizarOrden(ordenDeAcciones);
         

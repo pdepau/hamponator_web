@@ -30,14 +30,14 @@ async function subirDatos(file){
     // Upload file and metadata to the object 'images/mountains.jpg'
     const storageRef = ref(dbStorage, 'images/'+ uid +'/Plano.jpg');
     uploadBytes(storageRef, file).then((snapshot) => {
-        console.log('Uploaded a blob or file!');
+        //console.log('Uploaded a blob or file!');
     });
 
     // Subimos el archivo y llamamos a la funcion recoger imagen pasado 1 segundo
     cargarMapa.style.display = "none";
     mapa.style.display = "block";
     setTimeout(function(){
-        console.log("ahora");
+        //console.log("ahora");
         recogerImagen()
     }, 1000);
     }
@@ -62,7 +62,7 @@ async function subirDatos(file){
     // Upload file and metadata to the object 'images/mountains.jpg'
     const storageRef = ref(dbStorage, 'images/'+ uid +'/Plano.jpg');
     uploadBytes(storageRef, file).then((snapshot) => {
-        console.log('Uploaded a blob or file!');
+        //console.log('Uploaded a blob or file!');
     });
 
     // Subimos el archivo y mostramos la subida completada tras 1 segundo
@@ -71,33 +71,6 @@ async function subirDatos(file){
     }, 1000);
     }
 }
-
-/**
- * Recoge cada varios segundos el mensaje del realtime y si es nuevo guarda su imagen en storage
- */
-function startImageService() {
-    setInterval(function waitForImage() {
-        var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
-        // TODO: debe utilizar la ID del robot
-        fetch(Constants.url + `123456789-app.json`, requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            console.log(result);
-            try {
-                actualizarPlano(result.msg[0].image)
-            } catch (error) {
-                console.error(error);
-            }
-        })
-        .catch(error => console.error(error));
-    }, 5000);
-}
-
-// Al declarar la funcion, empieza su ejecucion
-startImageService();
 
 /**
  * Recoge el plano y lo muestra
@@ -178,17 +151,17 @@ function reDibujarPlano(canvas, ctx, orden){
     
     var keys = Object.keys(orden);
     var punticos = [];
-    console.log(keys.length);
+    //console.log(keys.length);
     let result = "";
     
     for(var i = 0; i < keys.length; i++){
 
         result = keys[i].slice(0, 1);
-        console.log(keys[i]);
+        //console.log(keys[i]);
         // Si es una foto
         if(result == "F"){
             ctx.beginPath();
-            console.log("Entro foto");
+            //console.log("Entro foto");
             punticos = orden[keys[i]];
             for(var j = 0; j < punticos.length; j = j+2){
                 ctx.arc(punticos[j], punticos[j+1], 5, 0, 10);
@@ -201,7 +174,7 @@ function reDibujarPlano(canvas, ctx, orden){
         else if(result == "R"){
 
             ctx.beginPath();
-            console.log("Entro ruta");
+            //console.log("Entro ruta");
             punticos = orden[keys[i]];
             ctx.moveTo(punticos[0], punticos[1])
             for(var j = 2; j < punticos.length; j = j+2){
@@ -218,7 +191,7 @@ function reDibujarPlano(canvas, ctx, orden){
 async function subirRuta(orden, ordenDeAcciones, canvas){
 
     var keys = Object.keys(orden);
-    console.log(keys.length);
+    //console.log(keys.length);
     let result = "";
     var subida = [];
 
@@ -233,7 +206,7 @@ async function subirRuta(orden, ordenDeAcciones, canvas){
     for(var i = 0; i < ordenDeAcciones.length; i++){
 
         result = ordenDeAcciones[i].slice(0, 1);
-        console.log(ordenDeAcciones[i]);
+        //console.log(ordenDeAcciones[i]);
 
         // Si es una foto
         if(result == "F"){
@@ -252,14 +225,6 @@ async function subirRuta(orden, ordenDeAcciones, canvas){
             }
 
             JSON.msg.push(punto);
-
-            /*
-            let text = '{ '+ ordenDeAcciones[i] +' : [' +
-            '{ "posicionX":'+ (puntos[0]/10) +' , "posicionY":'+ (puntos[1]/10) +' },' +
-            '{ "orientacionX":'+ (puntos[2]/10) +' , "orientacionY":'+ (puntos[3]/10) +']}';
-            console.log(text);
-            */
-            //subida.push(text);
         }
 
         else if(result == "R"){
@@ -283,76 +248,128 @@ async function subirRuta(orden, ordenDeAcciones, canvas){
 
                 punto.posiciones.push(pos)
 
-                //text+='{ "posicionX":'+ (puntos[j]/10) +' , "posicionY":'+ (puntos[j+1]/10) +' },';
             }
-            //text+=']}';
-            
-            console.log(text);
+
+            //console.log(text);
             subida.push(text);
-
-
-
             JSON.msg.push(punto);
         }
     }
 
-    console.log(subida);
     // Add a new document in collection "cities"
-    await setDoc(doc(db, "pruebas", "orden"), {
-        tipo: "Envio",
-        JSON: subida,
-        orden: ordenDeAcciones
+    var codigoVer = localStorage.getItem("CodigoVer");
+    let texto = codigoVer + "-web"
+    await setDoc(doc(db, "orden", texto), {
+        JSON: JSON
      });
 
-    var uid = localStorage.getItem("UID");
-    const q = query(collection(db, "Empresas"), where('UID', '==', uid));
-        // Obtenemos los documentos en forma de objetos DocumentSnapshots
+    set(storageRef(database, +codigoVer+'-web/'), JSON);
+}
+
+async function recogerRuta(orden, ordenDeAcciones, c, ctx){
+    
+    var i = 0;
+    var lista = [];
+
+    const q = query(collection(db, "orden"));
+
+    // Obtenemos los documentos en forma de objetos DocumentSnapshots
     await getDocs(q).then(querySnapshot => {
         querySnapshot.forEach(doc => {
-            let value = doc.data();
-            console.log(Object.values(value));
-            let objeto = Object.values(value);
-            for(var i = 0; i<objeto.length; i++){
-                if(Number.isInteger(objeto[i])){
-                    var codigoVer = objeto[i];
-                }
+
+            let valores = doc.data();
+            let result = valores.JSON;
+
+            result.msg.forEach(element => {
+                if (element.tipo == "ruta") {
+                    let texto = "Ruta" + i;
+                    element.posiciones.forEach(pos => {
+                        lista.push(pos.x*10);
+                        lista.push(pos.y*10);
+                    });
+                    orden[texto] = lista;
+                    lista = [];
+                    ordenDeAcciones.push(texto);
+                    i++;
+                } else if (element.tipo == "foto") {
+                    let texto = "Foto" + i;
+                    lista.push(element.posicion.x*10);
+                    lista.push(element.posicion.y*10);
+                    lista.push(element.orientacion.x*10);
+                    lista.push(element.orientacion.y*10);
+                    orden[texto] = lista;
+                    lista = [];
+                    ordenDeAcciones.push(texto);
+                    i++;
+            }})
+            reDibujarPlano(c,ctx, orden);
+            localStorage.setItem("nRuta", i);
+            actualizarOrden(ordenDeAcciones);
+        })
+
+        return;
+    }).catch(error => { });
+    
+      
+}
+
+function actualizarOrden(ordenDeAcciones){
+    
+    const sideBar = document.getElementById("mySidebar");
+
+    for(var i = 0; i < ordenDeAcciones.length; i++){
+
+        var result = ordenDeAcciones[i].slice(0, 1);
+
+        if(result == "F"){
+            var text = ordenDeAcciones[i];
+            const collection = document.getElementById(text);
+
+            if(collection!=null){
+                collection.remove();
             }
 
-            set(storageRef(database, +codigoVer+'-web/'), JSON);
-            
-        })
-        return;
-    }).catch(e => {
-        console.log(e);
-    });
-      
-}
+            var element = document.createElement(text);
+    
+            element.innerHTML = `<div class = "orden" id=${text}>
+                                    <img src="../ux/img/camera-solid.svg" alt="icono" class = "imagen">
+                                    <p class = "texto">${text}</p>
+                                </div>`;
+            sideBar.appendChild(element);
+        }
 
-async function recogerRuta(){
+        if(result == "R"){
+            var text = ordenDeAcciones[i];
+            const collection = document.getElementById(text);
 
-    const dbRef = storageRef(database);
-    var codigoVer = localStorage.getItem("CodigoVer");
-    get(child(dbRef, codigoVer+'-web/')).then((snapshot) => {
-    if (snapshot.exists()) {
-        console.log(snapshot.val());
-        // Aqui hacemos lo de convertir los datos a la lista de orden
-    } else {
-        console.log("No data available");
+            if(collection!=null){
+                collection.remove();
+            }
+
+        
+            var element = document.createElement(text);
+    
+            element.innerHTML = `<div class = "orden" id=${text}>
+                                    <img src="../ux/img/route-solid.svg" alt="icono" class = "imagen">
+                                    <p class = "texto">${text}</p>
+                                </div>`;
+            sideBar.appendChild(element);
+        }
+
     }
-    }).catch((error) => {
-    console.error(error);
-    });
-      
 }
+
+//
+// A partir de aqui es la pagina de alertas
+//
 
 async function recogerAlertas(body){
     // Hace una busqueda en la base de datos y recibe una lista de las alertas
-
     var alertas = ["Test 1", "Test 2", "testFinal"];
     crearAlertas(alertas, body);
 }
 
-function crearAlertas(alertas, body){
+function crearAlertas(alertas){
 
     if(alertas != null){
         var lista = [];
@@ -389,59 +406,30 @@ function crearAlertas(alertas, body){
     }
 }
 
-function actualizarOrden(ordenDeAcciones){
-
-    const collection = document.getElementById("orden");
-
-    //collection.remove();
-
-    
-    const sideBar = document.getElementById("mySidebar");
-
-    for(var i = 0; i < ordenDeAcciones.length; i++){
-
-        var result = ordenDeAcciones[i].slice(0, 1);
-
-        if(result == "F"){
-            var text = ordenDeAcciones[i];
-            const collection = document.getElementById(text);
-
-            if(collection!=null){
-                collection.remove();
+/**
+ * Recoge cada varios segundos el mensaje del realtime y si es nuevo guarda su imagen en storage
+ */
+/*
+function startImageService() {
+    setInterval(function waitForImage() {
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        // TODO: debe utilizar la ID del robot
+        fetch(Constants.url + `123456789-app.json`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            try {
+                actualizarPlano(result.msg[0].image)
+            } catch (error) {
+                console.error(error);
             }
-
-        
-
-        
-            var element = document.createElement(text);
-    
-            element.innerHTML = `<div class = "orden" id=${text}>
-                                    <img src="../ux/img/camera-solid.svg" alt="icono" class = "imagen">
-                                    <p class = "texto">${text}</p>
-                                </div>`;
-            sideBar.appendChild(element);
-        }
-
-        if(result == "R"){
-            console.log("aaa");
-            var text = ordenDeAcciones[i];
-            const collection = document.getElementById(text);
-
-            if(collection!=null){
-                collection.remove();
-            }
-
-        
-            var element = document.createElement(text);
-    
-            element.innerHTML = `<div class = "orden" id=${text}>
-                                    <img src="../ux/img/route-solid.svg" alt="icono" class = "imagen">
-                                    <p class = "texto">${text}</p>
-                                </div>`;
-            sideBar.appendChild(element);
-        }
-
-    }
+        })
+        .catch(error => console.error(error));
+    }, 5000);
 }
+*/
 
 export { subirDatos, actualizarPlano, recogerImagen, dibujarRuta, dibujarCirculo, reDibujarPlano, subirRuta, recogerRuta, recogerAlertas, actualizarOrden};
