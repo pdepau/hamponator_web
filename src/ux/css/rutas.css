@@ -2,6 +2,12 @@ body{
   background-color: #f7f7f7;
 }
 
+.contenedorDeMapa{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 /* The sidebar menu */
 .sidebar {
   height: 100%;
@@ -24,6 +30,7 @@ body{
     display: block;
     transition: 0.3s;
   }
+
 
   /* When you mouse over the navigation links, change their color */
 .sidebar a:hover {
@@ -99,8 +106,7 @@ body{
   }
 
   #display_image2 {
-    width: 100%;
-    max-width: 100%;
+    width: auto;
     height: 100vh;
     background-position: center;
     background-repeat: no-repeat;

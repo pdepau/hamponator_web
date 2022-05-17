@@ -31,6 +31,7 @@ function comprobarAlertas(alertas){
         var element = document.createElement(text);
 
             element.innerHTML = `  <div class = "tituloPdf" id=${text}>
+                                    <p>Resumen de las alertas RobotsSL</p>
                                     </div>
                                     
                                     <div class = "contenidoPdf">
@@ -39,9 +40,9 @@ function comprobarAlertas(alertas){
                                     
                                     <div class = "finalPdf">
                                     <p class = "fecha">
-                                    7/7/5
+                                    Generar informe dia/mes/año
                                     </p>
-                                    <button class = "descarga">
+                                    <button class = "descarga" href="javascript:demoFromHTML()">
                                     Descarga
                                     </button>
                                     </div>`;

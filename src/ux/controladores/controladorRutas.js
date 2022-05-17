@@ -182,8 +182,19 @@ window.addEventListener("DOMContentLoaded", async (e) => {
 
     // Elimina todas las marcas del canvas
     eliminar.addEventListener('click', async (e) => {
+      console.log("Hola");
       ctx.clearRect(0, 0, c.width, c.height);
       orden = {};
+
+      for(var j = 0; j < ordenDeAcciones.length; j++){
+        var text = ordenDeAcciones[j];
+        const collection = document.getElementById(text);
+
+        if(collection!=null){
+            collection.remove();
+        }
+      }
+
       ordenDeAcciones = [];
       actualizarOrden(ordenDeAcciones);
     });
