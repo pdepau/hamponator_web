@@ -950,7 +950,7 @@ h6 {
 }
 
 .main-nav .navbar-brand img {
-    width: 150px;
+    width: 4vw;
 
 }
 
@@ -1034,12 +1034,12 @@ header {
     flex-direction: column;
     -webkit-box-pack: center;
     -ms-flex-pack: center;
-    justify-content: center;
+   /* justify-content: center;*/
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
     /**/
-    background-image: url(../img/alexelcapo.JPG);
+    background-image: url(../img/alexelcapo.jpg);
 
     background-repeat: no-repeat;
     /*cambios portada*/
@@ -1090,7 +1090,8 @@ header h1 {
 }
 
 .pau {
-   /* margin-bottom: 270px;*/
+   margin-top:22vh;
+    margin-bottom: 600px;
 }
 
 @media (min-width: 544px) {
@@ -1106,7 +1107,7 @@ header h1 {
     }
 
     .pau {
-        margin-bottom: 600px;
+
     }
 
     header h2 {

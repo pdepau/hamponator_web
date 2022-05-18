@@ -2,18 +2,23 @@ body{
   background-color: #f7f7f7;
 }
 
+.contenedorDeMapa{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 /* The sidebar menu */
 .sidebar {
-    height: 100%; /* 100% Full-height */
-    width: 0; /* 0 width - change this with JavaScript */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Stay on top */
-    top: 0;
-    right: 0;
-    background-color: #111; /* Black*/
-    overflow-x: hidden; /* Disable horizontal scroll */
-    padding-top: 60px; /* Place content 60px from the top */
-    transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  background-color: white;
+  overflow-x: hidden;
+  transition: 0.5s;
   }
   
   /* The sidebar links */
@@ -25,6 +30,7 @@ body{
     display: block;
     transition: 0.3s;
   }
+
 
   /* When you mouse over the navigation links, change their color */
 .sidebar a:hover {
@@ -44,13 +50,13 @@ body{
   .openbtn {
     font-size: 20px;
     cursor: pointer;
-    background-color: #111;
+    background-color: #820053;
     color: white;
     padding: 10px 15px;
     border: none;
     position: fixed;
     right: 0;
-    top: 100px;
+    top: 50%;
     margin-right: 0px;
   }
   
@@ -100,8 +106,7 @@ body{
   }
 
   #display_image2 {
-    width: 100%;
-    max-width: 100%;
+    width: auto;
     height: 100vh;
     background-position: center;
     background-repeat: no-repeat;
@@ -138,6 +143,7 @@ body{
     margin-right: 0px;
     border-radius: 10px;
     border: 3px solid black;
+    width: 40px;
   }
 
   /* The button used to open the sidebar */
@@ -154,6 +160,7 @@ body{
     margin-right: 0px;
     border-radius: 10px;
     border: 3px solid black;
+    width: 40px;
   }
 
       /* The button used to open the sidebar */
@@ -170,6 +177,7 @@ body{
     margin-right: 0px;
     border-radius: 10px;
     border: 3px solid black;
+    width: 40px;
   }
 
   /* The button used to open the sidebar */
@@ -186,6 +194,7 @@ body{
     margin-right: 0px;
     border-radius: 10px;
     border: 3px solid black;
+    width: 40px;
   }
 
   /* The button used to open the sidebar */
@@ -202,6 +211,7 @@ body{
     margin-right: 0px;
     border-radius: 10px;
     border: 3px solid black;
+    width: 40px;
   }
 
   /* The button used to open the sidebar */
@@ -218,6 +228,7 @@ body{
     margin-right: 0px;
     border-radius: 10px;
     border: 3px solid black;
+    width: 40px;
   }
 
   .ruta:hover, .foto:hover, .esperar:hover, .borrar:hover, .guardar:hover, .eliminar:hover{
@@ -237,6 +248,7 @@ body{
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
     -webkit-box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.4);
     box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.4);
+    height: 10%;
 }
 
 .main-nav > .content-wrapper-sm {
@@ -252,7 +264,7 @@ body{
 }
 
 .main-nav .navbar-brand img {
-    width: 150px;
+    width: 3vw;
 }
 
 .main-nav .nav-links {
@@ -328,3 +340,41 @@ body{
   color: #edb506;
   cursor: pointer;
  }
+
+ .orden {
+  border-bottom: solid black 1px;
+  margin: 5px auto auto;
+  width: 100%;
+  height: 5vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #820053;
+}
+
+.imagen{
+  width: 20%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+}
+
+.texto{
+  width: 80%;
+  height: 100%;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  margin: 0;
+  font-size: 20px;
+}
+
+.tituloOrden{
+  color: #820053;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 9%;
+}

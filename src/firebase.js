@@ -3,10 +3,11 @@
 // Autor: Jorge Grau Giannakakis
 // Descripción: Aqui se especifican todos los datos necesaros para conectar con firebase
 
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js'
-import { getFirestore, collection, query, where, getDocs, doc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js'
+import { initializeApp} from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js'
+import { getFirestore, collection, query, where, getDocs, doc, setDoc} from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js'
+import { getDatabase, set, get, child, ref as storageRef} from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js'
 import * as firebaseAuth from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"
-import { getStorage, ref, uploadBytes, getDownloadURL  } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
+import { getStorage, ref, uploadBytes, getDownloadURL} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
 
 
 // Configuración de firebase
@@ -20,10 +21,16 @@ var firebaseConfig = {
     appId: "1:910773774186:web:f0031246f5e9ef1211e713"
 };
 
+
+
 // Inicializar app de Firebase
 const app = initializeApp(firebaseConfig);
 
 // Inicializar y exportar instancia de Firestore
 const db = getFirestore(app);
+
 const dbStorage = getStorage(app);
-export { db, dbStorage, collection, query, where, getDocs, firebaseAuth, getStorage, ref, uploadBytes, getDownloadURL };
+
+const database = getDatabase(app);
+
+export { db, dbStorage, database, collection, query, where, getDocs, firebaseAuth, getStorage, ref, uploadBytes, getDownloadURL, setDoc, doc, set, storageRef, get, child};

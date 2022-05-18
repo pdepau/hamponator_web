@@ -33,17 +33,16 @@ function registroCorreoYContrasena(){
  * Permite inicar sesión usando el correo y la contraseña
  * -> iniciarSesion -> 
  */
-function iniciarSesion(){
+function iniciarSesion(codigoVer){
   var correo = document.getElementById("campo_correo").value;
   var contrasena = document.getElementById("campo_contrasena").value;
   localStorage.setItem("SesionIniciada", 1);
+  localStorage.setItem("CodigoVer", codigoVer)
+  localStorage.setItem("reloadPreventivo", false)
   firebaseAuth.signInWithEmailAndPassword(firebaseAuth.getAuth(), correo, contrasena).catch(function(error) {
   });
 
-  setTimeout(function(){
-    location.reload();
-}, 700);
-  
+  comprobarUsuario();
 }
   
 /**
@@ -53,21 +52,53 @@ function iniciarSesion(){
 function cerrarSesion(){
   firebaseAuth.signOut(firebaseAuth.getAuth());
   localStorage.setItem("SesionIniciada", 0);
+  localStorage.setItem("CodigoVer", -1)
+  localStorage.setItem("reloadPreventivo", false);
   location.href = '../index.html'; 
 }
 
-/**
- * El google login funciona como inicio de sesión y registro
- * -> GoogleLogin-> 
- */
-function GoogleLogin(){
+async function recogerCodigo(){
+  var uid = localStorage.getItem("UID");
+    const q = query(collection(db, "Empresas"), where('UID', '==', uid));
+        // Obtenemos los documentos en forma de objetos DocumentSnapshots
+    await getDocs(q).then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+            let value = doc.data();
+            console.log(Object.values(value));
+            let objeto = Object.values(value);
+            for(var i = 0; i<objeto.length; i++){
+                if(Number.isInteger(objeto[i])){
+                    var codigoVer = objeto[i];
+                    localStorage.setItem("CodigoVer", codigoVer);
+                }
+            }
+            
+        })
 
-  let provider = new firebaseAuth.GoogleAuthProvider();
-
-  firebaseAuth.signInWithPopup(firebaseAuth.getAuth(), provider).then(res=>{
-  }).catch(e=>{
-    console.log(e)
-  })
+        var codigo = localStorage.getItem("CodigoVer");
+        if(codigo != null){
+        location.href = '../ux/rutas.html';
+        }
+        return;
+    }).catch(e => {
+        console.log(e);
+    });
 }
 
-export { GoogleLogin, cerrarSesion, iniciarSesion, registroCorreoYContrasena };
+function comprobarUsuario(){
+  firebaseAuth.onAuthStateChanged(firebaseAuth.getAuth(), function(user) {
+    // Si el usuario esta registrado
+    var sesion = localStorage.getItem("SesionIniciada");
+    console.log(sesion);
+    if (user) {
+      if(sesion == 1){
+        var uid = user.uid;
+        console.log(uid + "");
+        localStorage.setItem("UID", uid);
+        recogerCodigo();
+      }
+      }
+    });
+}
+
+export {cerrarSesion, iniciarSesion, registroCorreoYContrasena };

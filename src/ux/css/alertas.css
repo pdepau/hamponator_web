@@ -1,0 +1,137 @@
+.padre{
+    margin: auto;
+    margin-top: 1%;
+    width:80%;
+    height:40vh;
+}
+
+
+.barraSuperior{
+    background-color:#820053;
+    width:100%;
+    height:20%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    vertical-align: middle;
+
+}
+
+
+.titulo{
+    width:70%;
+    height:100%;
+    text-align: center;
+
+}
+
+.botonAceptar{
+    background-color:green;
+    width:15%;
+    height:100%;
+    border: none;
+
+}
+
+.botonDenegar{
+    background-color:red;
+    width:15%;
+    height:100%;
+    border: none;
+
+}
+
+.contenido{
+    background-color:gainsboro;
+    width:100%;
+    height:80%;
+    display: flex;
+
+}
+
+.imagen {
+    width:70%;
+    height:100%;
+}
+
+.prediccion{
+  width: 30%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  font-size: 15px;
+    
+}
+
+.blanco{
+    color: white;
+  }
+  
+  .tituloPdf{
+      background-color:gainsboro;
+      margin: auto;
+      margin-top: 1%;
+      width:80%;
+      height:10%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+  
+  .contenidoPdf{
+      background-color:gainsboro;
+      margin: auto;
+      margin-top: 1%;
+      width:80%;
+      height:60%;
+  }
+  
+  .finalPdf{
+    background-color:gainsboro;
+    margin: auto;
+    margin-top: 1%;
+    width:80%;
+    height:10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .fecha{
+    width:80%;
+    height:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+  }
+  .descarga{
+    width:20%;
+    height:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    background-color: #c0c0c0;
+  }
+
+  .botonDescarga{
+    width:100%;
+    height: 100%;
+  }
+
+  .imagenAlertas{
+    width: auto;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    min-height: 150px;
+  }
+
+  .divContenedorPDF{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }

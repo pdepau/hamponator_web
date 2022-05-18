@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', event => {
     c = document.getElementById("myCanvas");
     ctx = c.getContext("2d");
 
-    img.src = 'my_map.jpg';
+    img.src = 'my_map.png';
     img.onload = function () {
 
         drawImageScaled(img, ctx)
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', event => {
             ctx.clearRect(0, 0, c.width, c.height)
             drawImageScaled(img, ctx)
             checkpoints.forEach(element => {
-                pos = relativePosRobot(element[0], element[1], ctx.canvas)
+                pos = relativePosRobot(element[0], -element[1], ctx.canvas)
 
                 //console.log(pos)
                 ctx.beginPath();
@@ -101,18 +101,15 @@ document.addEventListener('DOMContentLoaded', event => {
         ctx.fill();
         ctx.stroke();
 
-        destino_x = ((pos.x * 11.7) / rect.width)
-        destino_y = ((pos.y * 9.5) / rect.height)
+        destino_x = ((pos.x * 1.9) / rect.width - 0.2)
+        destino_y = -((pos.y * 1.9) / rect.height - 0.2)
 
         if (modo_checkpoints) {
             checkpoints.push([destino_x, destino_y])
             console.log(checkpoints)
-        } else {
-            var mensaje = generar_mensaje_goal_pose(destino_x,destino_y)
-            goal_pose.publish(mensaje);
         }
 
-
+        //goal_pose.publish(mensaje);
         //odom.publish(create_waypoints())
     })
 })
@@ -201,7 +198,6 @@ function connect() {
     odom.subscribe(function (message) {
         robos_x = message.pose.pose.position.x
         robos_y = message.pose.pose.position.y
-        //console.log(message)
         dibujar()
     });
 
@@ -227,7 +223,7 @@ function destino_alcanzado(x, y) {
         if (checkpoint_actual >= checkpoints.length) {
             checkpoint_actual = 0
         }
-
+        
         titulo.innerHTML = "Destino alcanzado"
         titulo.style.color = "#00ff00"
 
@@ -282,9 +278,11 @@ function relativePos(event, rect) {
 
 function relativePosRobot(px, py, element) {
     var rect = element.getBoundingClientRect();
+    px = px + 0.2
+    py = py + 0.2
 
     return {
-        x: Math.floor(px * rect.width / 11.7),
-        y: Math.floor(py * rect.height / 9.5)
+        x: Math.floor(px * rect.width / 1.9),
+        y: Math.floor(py * rect.height / 1.9)
     };
 }

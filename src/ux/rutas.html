@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestor de rutas</title>
+  <title>Centro de datos</title>
 
  <!-- BOOTSWATCH -->
  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/pulse/bootstrap.min.css">
@@ -21,7 +21,7 @@
   <!-- Main Navigation -->
   <nav class="main-nav" id="main-nav">
     <div class="content-wrapper-sm">
-        <a href="#" class="navbar-brand"><img src="../ux/img/LOGO%20SIN%20FONDO.png" alt=""></a>
+        <a href="#" class="navbar-brand"><img src="../ux/img/hamponatorLogo.png" alt=""></a>
         <div id="menu-button">
             <div class="bar1"></div>
             <div class="bar2"></div>
@@ -41,17 +41,19 @@
       <input type="file" id="myfile" name="myfile " accept="image/png, image/jpeg">
       <button type="button" id="subir" name="subir">Subir</button>
       <div id="mapa2">
-        <img id="imagen">
+        <canvas id="imagen">
       </div>      
     </div>
   </div>
 
   <div id="mapa">
-    <img id="display_image2" width="100px" height="100vh">
+    <div class="contenedorDeMapa">
+    <canvas id="display_image2" class= "canvas" width="1000px" height="1000px">
+    </div>
   </div>
 
     <div id="mySidebar" class="sidebar">
-      
+      <h1 class="tituloOrden">Orden</h1>
     </div>
 
     <div id="main">
@@ -59,18 +61,20 @@
     </div>
 
     <div id="herramientas">
-      <button class="ruta" id="ruta">&#9776;</button>
-      <button class="foto" id="foto">&#9776;</button>
-      <button class="esperar" id="esperar">&#9776;</button>
-      <button class="borrar" id="borrar">&#9776;</button>
-      <button class="guardar" id="guardar">&#9776;</button>
-      <button class="eliminar" id="eliminar">&#9776;</button>
+      <button class="ruta" id="ruta"><img src="../ux/img/route-solid.svg"></button>
+      <button class="foto" id="foto"><img src="../ux/img/camera-solid.svg"></button>
+      <button class="esperar" id="esperar"><img src="../ux/img/circle-pause-solid.svg"></button>
+      <button class="guardar" id="guardar"><img src="../ux/img/floppy-disk-solid.svg"></button>
+      <button class="eliminar" id="eliminar"><img src="../ux/img/trash-can-solid.svg"></button>
+      <button class="borrar" id="borrar"><img src="../ux/img/eraser-solid.svg"></button>
+
     </div>
   <!-- CUSTOM CODE -->
   <script type="module" src="../firebase.js"></script>
   <script type="module" src="../logica/logica.js"></script>
   <script type="module" src="../logica/logicaAuth.js"></script>
   <script type="module" src="../ux/controladores/controladorRutas.js"></script>
+
 
 </body>
 
