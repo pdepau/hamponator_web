@@ -2,7 +2,6 @@ var lista = [];
 var datosImagenes = [];
 var datosTexto = [];
 
-
 function convertirLista(){
     var alertas = localStorage.getItem("alertas");
     var alertasImagenes = localStorage.getItem("imagenes");
@@ -39,6 +38,14 @@ function destruir(i, valor){
 
 function comprobarAlertas(alertas){
 
+    reloadPreventivo = localStorage.getItem("reloadPreventivo");
+    console.log("Soy reload preventivo");
+    console.log(reloadPreventivo);
+    if(reloadPreventivo == "false"){
+        console.log("ajaja");
+        localStorage.setItem("reloadPreventivo", true);
+        location.reload();
+    }
     console.log(alertas);
 
     if(!alertas.includes(0)){

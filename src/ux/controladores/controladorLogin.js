@@ -47,7 +47,6 @@ async function recogerCodigo(){
                     localStorage.setItem("CodigoVer", codigoVer);
                 }
             }
-            
         })
 
         var codigo = localStorage.getItem("CodigoVer");

@@ -41,6 +41,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
   // Si la sesion no esta iniciada vuelves a la landing page
   var sesion = localStorage.getItem("SesionIniciada");
   var codigoVer = localStorage.getItem("CodigoVer");
+
   if(sesion == 0){
     location.href = '../ux/login.html';
   }
@@ -182,7 +183,6 @@ window.addEventListener("DOMContentLoaded", async (e) => {
 
     // Elimina todas las marcas del canvas
     eliminar.addEventListener('click', async (e) => {
-      console.log("Hola");
       ctx.clearRect(0, 0, c.width, c.height);
       orden = {};
 
