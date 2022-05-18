@@ -371,39 +371,62 @@ async function recogerAlertas(body){
 
 function crearAlertas(alertas){
 
-    if(alertas != null){
-        var lista = [];
-        for(var i = 0; i < alertas.length; i++){
-            lista.push(0);
-            var text = "Alerta" + i;
+    get(storageRef(database, "-app")).then((snapshot) => {
+        if (snapshot.exists()) {
+            console.log(snapshot.val());
+            var datos = snapshot.val().msg[0].images[0];
+            console.log(datos);
+            /*
+            var text = "FotoTest";
             var element = document.createElement(text);
-
-            element.innerHTML =  `  <div class="padre" id=${text}>
-                                    <div class="barraSuperior">
-                                    <div class="titulo">
-                                        <p class = "blanco">Alerta ${i+1}</p>
-                                    </div>
-                                    <button class="botonAceptar" onclick="aceptar(${i})"> 
-                                        <p class = "blanco">Añadir al informe</p>
-                                    </button>
-                                    <button class="botonDenegar" onclick="falsaAlarma(${i})">
-                                        <p class = "blanco"> Falsa alarma </p>
-                                    </button>
-                                    </div>
-                                    <div class="contenido">
-                                    <div class="imagen">
-                                
-                                    </div>
-                                    <div class="prediccion">
-                                    ${alertas[i]}
-                                    </div>
-                                    </div>
-                                </div>`;
+            element.innerHTML = `<img src="${datos}">`;
             document.body.appendChild(element);
+            */
+            if(alertas != null){
+                var lista = [];
+                for(var i = 0; i < alertas.length; i++){
+                    lista.push(0);
+                    var text = "Alerta" + i;
+                    var element = document.createElement(text);
+    
+                    element.innerHTML =`<div class="padre" id=${text}>
+                                            <div class="barraSuperior">
+                                            <div class="titulo">
+                                                <p class = "blanco">Alerta ${i+1}</p>
+                                            </div>
+                                            <button class="botonAceptar" onclick="aceptar(${i})"> 
+                                                <p class = "blanco">Añadir al informe</p>
+                                            </button>
+                                            <button class="botonDenegar" onclick="falsaAlarma(${i})">
+                                                <p class = "blanco"> Falsa alarma </p>
+                                            </button>
+                                            </div>
+                                            <div class="contenido">
+                                            <div class="imagen">
+                                                <img class="imagenAlertas"src="${datos}">
+                                            </div>
+                                            <div class="prediccion">
+                                            ${alertas[i]}
+                                            </div>
+                                            </div>
+                                        </div>`;
+                    document.body.appendChild(element);
+                    var text = "imagenes"+i;
+                    localStorage.setItem(text, datos);
+                    var text = "alertasTexto"+i;
+                    localStorage.setItem(text, alertas[i]);
+                }
+    
+                localStorage.setItem("alertas", lista);
+                
+            }
+    
+        } else {
+        console.log("No data available");
         }
-
-        localStorage.setItem("alertas", lista);
-    }
+    }).catch((error) => {
+      console.error(error);
+    });
 }
 
 /**
