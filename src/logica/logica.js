@@ -3,7 +3,6 @@
 // Autor: Jorge Grau Giannakakis
 // Descripción: Gestiona la logica del centro de datos
 
-import { constants } from 'buffer';
 import {dbStorage, database, getStorage, ref, uploadBytes, getDownloadURL, firebaseAuth, setDoc, doc, set, db, storageRef, collection, query, where, getDocs, get, child} from '../firebase.js';
 
 const mapa = document.getElementById("mapa");
@@ -11,27 +10,6 @@ const cargarMapa = document.getElementById("cargarMapa");
 const mySidebar = document.getElementById("mySidebar");
 const main = document.getElementById("main");
 const herramientas = document.getElementById("herramientas");
-
-// CONFIGURACION ESCALA DEL MAPA
-var scale = {
-    x: 10,
-    y: 10
-}
-window.addEventListener("resize",function(){
-    updateScale(scale, canvas);
-});
-/*
-    0,0 -------> +x
-    |
-    |
-    |
-    v 
-    +y
-
-    Medido en píxeles, siempre tienen la misma posición independientemente del
-    tamaño del canvas. Debería saber cuánto de grande se ha hecho la imagen y ajustar la
-    escala en consecuencia.
-*/
 
 /**
  * Sube datos a Firestore Storage
@@ -170,9 +148,7 @@ function dibujarCirculo(canvas, event, ctx, punto){
 
 function reDibujarPlano(canvas, ctx, orden){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Update Scale
-    updateScale(scale, canvas);
-
+    
     var keys = Object.keys(orden);
     var punticos = [];
     //console.log(keys.length);
@@ -212,16 +188,6 @@ function reDibujarPlano(canvas, ctx, orden){
     
 }
 
-/**
- * Calculate the scale of the image inside the canvas
- * @param {object} scale x, y
- * @param {Canvas tag} canvas 
- */
-function updateScale(scale, canvas) {
-    var ctx = canvas.getContext('2d');
-    ctx.scale(scale.x, scale.y);
-}
-
 async function subirRuta(orden, ordenDeAcciones, canvas){
 
     var keys = Object.keys(orden);
@@ -249,12 +215,12 @@ async function subirRuta(orden, ordenDeAcciones, canvas){
             let punto ={
                 tipo: "foto",
                 posicion: {
-                    x: (puntos[0]/scale.x),
-                    y: (puntos[1]/scale.y)
+                    x: (puntos[0]/10),
+                    y: (puntos[1]/10)
                 },
                 orientacion: {
-                    x: (puntos[2]/scale.x),
-                    y: (puntos[3]/scale.y)
+                    x: (puntos[2]/10),
+                    y: (puntos[3]/10)
                 }
             }
 
@@ -276,8 +242,8 @@ async function subirRuta(orden, ordenDeAcciones, canvas){
             for(var j = 0; j < puntos.length; j = j+2){
 
                 let pos = {
-                    x: (puntos[j]/scale.x) , 
-                    y: (puntos[j+1]/scale.y)
+                    x: (puntos[j]/10) , 
+                    y: (puntos[j+1]/10)
                 }
 
                 punto.posiciones.push(pos)

@@ -107,8 +107,10 @@ body{
 
   #display_image2 {
     width: auto;
+    height: 100vh;
     background-position: center;
     background-repeat: no-repeat;
+    background-size: contain;
     background-color: #445c9c;
   }
 
