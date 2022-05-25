@@ -132,8 +132,9 @@ function dibujarRuta(canvas, event, ctx, puntos){
     let y = ((event.clientY - rect.top)/height)*1000;
 
     // Añadimos los puntos a la lista de puntos existentes
-    puntos.push(x);
-    puntos.push(y);
+    // Se deben guardar en escala de 10 para poder ser enviados
+    // Es caótico pero la estructura está hecha así ya
+    puntos.push({x: x/10, y: y/10});
 
     //console.log("Coordinate x: " + x, "Coordinate y: " + y);
     // Dibujamos la linea
@@ -183,118 +184,54 @@ function reDibujarPlano(canvas, ctx, orden){
     //console.log(keys.length);
     let result = "";
     
-    // Miramos que contiene el diccionario
-    for(var i = 0; i < keys.length; i++){
-
-        result = keys[i].slice(0, 1);
-        //console.log(keys[i]);
-
-        // Si es una foto
-        if(result == "F"){
-
-            // Dibujamos un circulo
-            ctx.beginPath();
-            //console.log("Entro foto");
-            punticos = orden[keys[i]];
-            for(var j = 0; j < punticos.length; j = j+2){
-                ctx.arc(punticos[j], punticos[j+1], 5, 0, 10);
+    // Tomamos los puntos de orden
+    for (let i = 0; i < keys.length; i++) {
+        // si el punto es una ruta, dibuja sus puntos en ctx
+        if (orden[keys[i]].tipo == "ruta") {
+            punticos = orden[keys[i]].puntos;
+            //console.log(punticos);
+            // Si no es el primero y el anterior tambien era una ruta, une el ultimo de la
+            // anterior con el primero de esta
+            if (i != 0 && orden[keys[i-1]].tipo == "ruta") {
+                // toma el ultimo punto de la anterior
+                let ultimo = orden[keys[i-1]].puntos[orden[keys[i-1]].puntos.length-1];
+                // toma el primer punto de esta
+                let primero = punticos[0];
+                // une los puntos con una linea
+                ctx.beginPath();
+                ctx.moveTo(ultimo.x*10, ultimo.y*10);
+                ctx.lineTo(primero.x*10, primero.y*10);
+                ctx.stroke();
             }
-            ctx.closePath();
-            ctx.fill();
-            
-        }
-
-        // Si es una ruta
-        else if(result == "R"){
-
-            // Dibujamos una ruta
-            ctx.beginPath();
-            //console.log("Entro ruta");
-            punticos = orden[keys[i]];
-            ctx.moveTo(punticos[0], punticos[1])
-            for(var j = 2; j < punticos.length; j = j+2){
-                ctx.lineTo(punticos[j], punticos[j+1]);
+            // une los puntos con una linea
+            for (let j = 0; j < punticos.length; j++) {
+                ctx.fillStyle = '#f00';
+                ctx.fillRect(punticos[j].x*10, punticos[j].y*10, 10, 10);
+                // si no es el primero, lo une con una linea al anterior
+                if (j != 0) {
+                    ctx.beginPath();
+                    ctx.moveTo(punticos[j-1].x*10, punticos[j-1].y*10);
+                    ctx.lineTo(punticos[j].x*10, punticos[j].y*10);
+                    ctx.stroke();
+                }
             }
-            ctx.closePath();
-            ctx.stroke();
-            
         }
     }
-    
 }
 
 /**
  * Se crea un JSON para subir los datos de los puntos a firebase
  * orden, ordenDeAcciones -> subirRuta ->
  */
-async function subirRuta(orden, ordenDeAcciones){
-    
-    let result = "";
+async function subirRuta(orden, canvasElem){
 
     // Dentro del JSON tenemos un marcador de tiempo y un msg, que es donde iran los puntos
     let JSON = {
         time: new Date().getTime(),
-        msg:[
-            
-        ]
-    
+        msg: null
     }
 
-    for(var i = 0; i < ordenDeAcciones.length; i++){
-
-        result = ordenDeAcciones[i].slice(0, 1);
-
-        // Si es una foto
-        if(result == "F"){
-            
-            // Obtenemos los puntos
-            var puntos = orden[ordenDeAcciones[i]];
-            
-            // Los creamos con formato JSON, el tipo indica que es una foto, el primer par es la posicion y el segundo la orientacion
-            let punto ={
-                tipo: "foto",
-                posicion: {
-                    x: (puntos[0]/10),
-                    y: (puntos[1]/10)
-                },
-                orientacion: {
-                    x: (puntos[2]/10),
-                    y: (puntos[3]/10)
-                }
-            }
-
-            // Se añade al JSON
-            JSON.msg.push(punto);
-        }
-
-        else if(result == "R"){
-
-            // Se crea el JSON especificando que es una ruta
-            let punto ={
-                tipo: "ruta",
-                posiciones: [
-
-                ]
-            }
-
-
-            var puntos = orden[ordenDeAcciones[i]];
-
-            for(var j = 0; j < puntos.length; j = j+2){
-
-                let pos = {
-                    x: (puntos[j]/10) , 
-                    y: (puntos[j+1]/10)
-                }
-
-                punto.posiciones.push(pos)
-
-            }
-
-            // Se añade al JSON
-            JSON.msg.push(punto);
-        }
-    }
+    JSON.msg = orden;
 
     // Recogemos el codigoDeVerificacion de este usuario
     var codigoVer = localStorage.getItem("CodigoVer");
@@ -328,38 +265,16 @@ async function recogerRuta(orden, ordenDeAcciones, c, ctx){
             let valores = doc.data();
             let result = valores.JSON;
 
-            // Desglosamos el mensaje JSON y lo añadimos a los puntos
-            result.msg.forEach(element => {
-                if (element.tipo == "ruta") {
-                    let texto = "Ruta" + i;
-                    element.posiciones.forEach(pos => {
-                        lista.push(pos.x*10);
-                        lista.push(pos.y*10);
-                    });
-                    orden[texto] = lista;
-                    lista = [];
-                    ordenDeAcciones.push(texto);
-                    i++;
-                } else if (element.tipo == "foto") {
-                    let texto = "Foto" + i;
-                    lista.push(element.posicion.x*10);
-                    lista.push(element.posicion.y*10);
-                    lista.push(element.orientacion.x*10);
-                    lista.push(element.orientacion.y*10);
-                    orden[texto] = lista;
-                    lista = [];
-                    ordenDeAcciones.push(texto);
-                    i++;
-            }})
+            orden = result.msg;
+
+            console.log("Orden recibido de Firebase:")
+            console.log(result.msg)
 
             // Llamamos a redibujarPlano
             reDibujarPlano(c,ctx, orden);
             
             // Actualizamos el numero de ruta
             localStorage.setItem("nRuta", i);
-            
-            // Actualizamos el orden
-            actualizarOrden(ordenDeAcciones);
         })
 
         return;

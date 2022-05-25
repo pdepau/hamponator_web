@@ -19,7 +19,7 @@ var ctx = c.getContext("2d");
 
 var punto = []
 var puntos = []
-var orden = {};
+var ordenes = [];
 var nRuta = 0;
 var contador = 0;
 
@@ -47,7 +47,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
 
   // Recogemos ruta de firebase
   if(codigoVer.length == 9){
-    recogerRuta(orden, ordenDeAcciones, c, ctx);
+    recogerRuta(ordenes, ordenDeAcciones, c, ctx);
     nRuta = localStorage.getItem("nRuta");
   }
 
@@ -99,7 +99,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
   
     });
 
-    // Boton ruta
+    // Boton ruta crear y guardar
     ruta.addEventListener('click', async (e) => {
       if(rutaActivada == false){
         resetHerramientas();
@@ -109,14 +109,8 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         rutaActivada = true;
       }
       else{ 
-        if(puntos.length > 0){
-          let texto = "Ruta" + nRuta;
-          orden[texto] = puntos;
-          ordenDeAcciones.push(texto);
-          puntos = [];
-          nRuta++;
-          actualizarOrden(ordenDeAcciones);
-        }
+        // si ya se han puesto puntos, se guarda la ruta en el ordenes
+        guardarRutaPuntos();
         resetHerramientas();
       }
     });
@@ -137,7 +131,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         }
         else if(punto.length > 0 && contador > 1){
           let texto = "Foto" + nRuta;
-          orden[texto] = punto;
+          ordenes[texto] = punto;
           ordenDeAcciones.push(texto);
           punto = [];
           nRuta++;
@@ -150,14 +144,17 @@ window.addEventListener("DOMContentLoaded", async (e) => {
     // Boton guardar
     guardar.addEventListener('click', async (e) => {
       guardarRutaPuntos();
-      // Se sube la configuracion a la base de datos, la configuracion es el diccionario orden y el orden valga la redundancia
-      subirRuta(orden, ordenDeAcciones, canvasElem);
+      // Se sube la configuracion a la base de datos, la configuracion es el diccionario ordenes y el ordenes valga la redundancia
+      subirRuta(ordenes, canvasElem);
+      console.log("Rutas (ordenes)");
+      console.log(ordenes);
+      console.log("Orden de acciones: " + ordenDeAcciones);
     });
     
     // Boton borrar
     borrar.addEventListener('click', async (e) => {
       // Al hacer click en un sitio busca los putnos adyacentes y los borra
-      // Se hace un clear y se redibujan con el diccionario orden
+      // Se hace un clear y se redibujan con el diccionario ordenes
       if(borrarActivada == false){
         guardarRutaPuntos();
         borrar.style.backgroundColor = '#edb506';
@@ -177,7 +174,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
       puntos = [];
       guardarRutaPuntos();
       ctx.clearRect(0, 0, c.width, c.height);
-      orden = {};
+      ordenes = [];
 
       for(var j = 0; j < ordenDeAcciones.length; j++){
         var text = ordenDeAcciones[j];
@@ -206,7 +203,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         if(contador == 2){
           contador = 0;
           let texto = "Foto" + nRuta;
-          orden[texto] = punto;
+          ordenes[texto] = punto;
           ordenDeAcciones.push(texto);
           punto = [];
           nRuta++;
@@ -221,10 +218,10 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         let x = ((e.clientX - rect.left)/width)*1000;
         let y = ((e.clientY - rect.top)/height)*1000;
 
-        for (var key in orden){
+        for (var key in ordenes){
           //key will be -> 'id'
           //dictionary[key] -> 'value'
-          punticos = orden[key];
+          punticos = ordenes[key];
           for(var i = 0; i < punticos.length; i++){
             if(x+10 > punticos[i] && x-10 < punticos[i] && y+10 > punticos[i+1] && y-10 < punticos[i+1]){
               cosicasDeBorrar.push(key);
@@ -232,7 +229,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
           }
         }
         for(var i = 0; i < cosicasDeBorrar.length; i++){
-          delete orden[cosicasDeBorrar[i]];
+          delete ordenes[cosicasDeBorrar[i]];
         }
 
         for(var i = 0; i < cosicasDeBorrar.length; i++){
@@ -251,7 +248,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
           }
         }
         
-        reDibujarPlano(c,ctx, orden);
+        reDibujarPlano(c,ctx, ordenes);
         cosicasDeBorrar = [];
         actualizarOrden(ordenDeAcciones);
         
@@ -272,12 +269,17 @@ function resetHerramientas(){
 
 function guardarRutaPuntos(){
   if(puntos.length > 0){
-    let texto = "Ruta" + nRuta;
-    orden[texto] = puntos;
-    ordenDeAcciones.push(texto);
+    let nuevaOrden = {
+      id: "Ruta" + nRuta,
+      tipo: "ruta",
+      puntos: puntos
+    }
+    // vaciamos los puntos
     puntos = [];
+    // Aumentamos en 1 las rutas creadas
     nRuta++;
-    actualizarOrden(ordenDeAcciones);
+    // Lo añadimos al ordenes
+    ordenes.push(nuevaOrden);
+    reDibujarPlano(c, ctx, ordenes);
   }
-  resetHerramientas();
 }
