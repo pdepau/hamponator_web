@@ -1,3 +1,9 @@
+// Nombre fichero: controladorAlertasHTML.js
+// Fecha: WIP
+// Autor: Jorge Grau Giannakakis
+// Descripción: Gestiona la logica de las alertas y la creación del pdf
+
+
 var lista = [];
 var datosImagenes = [];
 var datosTexto = [];
