@@ -15,6 +15,9 @@ const contra = document.getElementById("contra");
 
 // Cuando la pagina cargue empezamos la funcion
 window.addEventListener("DOMContentLoaded", async (e) => {
+
+    var codigoVer = localStorage.getItem("CodigoVer");
+    contra.value = codigoVer;
     // Si la sesion no esta iniciada vuelves a la landing page
     var sesion = localStorage.getItem("SesionIniciada");
     if(sesion == 0){

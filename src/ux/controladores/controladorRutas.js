@@ -13,7 +13,6 @@ const image_input = document.querySelector("#myfile");
 
 var rutaActivada = false;
 var fotoActivada = false;
-var pausaActivada = false;
 var borrarActivada = false;
 var c = document.getElementById("display_image2");
 var ctx = c.getContext("2d");
@@ -31,7 +30,6 @@ var ordenDeAcciones = [];
 
 const ruta = document.getElementById("ruta");
 const foto = document.getElementById("foto");
-const pausa = document.getElementById("esperar");
 const borrar = document.getElementById("borrar");
 const guardar = document.getElementById("guardar");
 const eliminar = document.getElementById("eliminar");
@@ -42,10 +40,12 @@ window.addEventListener("DOMContentLoaded", async (e) => {
   var sesion = localStorage.getItem("SesionIniciada");
   var codigoVer = localStorage.getItem("CodigoVer");
 
+  // Si la sesion no esta iniciada mandamos al usuario al login
   if(sesion == 0){
     location.href = '../ux/login.html';
   }
 
+  // Recogemos ruta de firebase
   if(codigoVer.length == 9){
     recogerRuta(orden, ordenDeAcciones, c, ctx);
     nRuta = localStorage.getItem("nRuta");
@@ -99,6 +99,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
   
     });
 
+    // Boton ruta
     ruta.addEventListener('click', async (e) => {
       if(rutaActivada == false){
         resetHerramientas();
@@ -120,6 +121,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
       }
     });
 
+    // Boton foto
     foto.addEventListener('click', async (e) => {
       if(fotoActivada == false){
         resetHerramientas();
@@ -139,32 +141,13 @@ window.addEventListener("DOMContentLoaded", async (e) => {
       }
     });
 
-    pausa.addEventListener('click', async (e) => {
-      if(pausaActivada == false){
-        resetHerramientas();
-        pausa.style.backgroundColor = '#edb506';
-        ctx.fillStyle = '#f00';
-        ctx.beginPath();
-        pausaActivada = true;
-      }
-      else{ 
-        if(punto.length > 0){
-          let texto = "Pausa" + nRuta;
-          orden[texto] = punto;
-          ordenDeAcciones.push(texto);
-          punto = [];
-          nRuta++;
-          actualizarOrden(ordenDeAcciones);
-        }
-        resetHerramientas();
-      }
-    });
-
+    // Boton guardar
     guardar.addEventListener('click', async (e) => {
       // Se sube la configuracion a la base de datos, la configuracion es el diccionario orden y el orden valga la redundancia
       subirRuta(orden, ordenDeAcciones, canvasElem);
     });
-
+    
+    // Boton borrar
     borrar.addEventListener('click', async (e) => {
       // Al hacer click en un sitio busca los putnos adyacentes y los borra
       // Se hace un clear y se redibujan con el diccionario orden
@@ -199,6 +182,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
       actualizarOrden(ordenDeAcciones);
     });
 
+    // Gestor del canvas
     let canvasElem = document.querySelector(".canvas");
     canvasElem.addEventListener("click", function(e)
     {
@@ -219,9 +203,6 @@ window.addEventListener("DOMContentLoaded", async (e) => {
           actualizarOrden(ordenDeAcciones);
           resetHerramientas();
         }
-      }
-      if(pausaActivada){
-
       }
       if(borrarActivada){
         let width = c.offsetWidth;
@@ -272,11 +253,9 @@ window.addEventListener("DOMContentLoaded", async (e) => {
 function resetHerramientas(){
   rutaActivada = false;
   fotoActivada = false;
-  pausaActivada = false;
   borrarActivada = false;
   ruta.style.backgroundColor = '#820053';
   foto.style.backgroundColor = '#820053';
-  pausa.style.backgroundColor = '#820053';
   borrar.style.backgroundColor = '#820053';
   actualizarOrden(ordenDeAcciones);
 }

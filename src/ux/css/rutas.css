@@ -163,8 +163,8 @@ body{
     width: 40px;
   }
 
-      /* The button used to open the sidebar */
-  .esperar {
+  /* The button used to open the sidebar */
+  .borrar {
     font-size: 20px;
     cursor: pointer;
     background-color: #820053;
@@ -181,7 +181,7 @@ body{
   }
 
   /* The button used to open the sidebar */
-  .borrar {
+  .guardar {
     font-size: 20px;
     cursor: pointer;
     background-color: #820053;
@@ -198,23 +198,6 @@ body{
   }
 
   /* The button used to open the sidebar */
-  .guardar {
-    font-size: 20px;
-    cursor: pointer;
-    background-color: #820053;
-    color: white;
-    padding: 3px 8px;
-    border: none;
-    position: fixed;
-    left: 10px;
-    top: 300px;
-    margin-right: 0px;
-    border-radius: 10px;
-    border: 3px solid black;
-    width: 40px;
-  }
-
-  /* The button used to open the sidebar */
   .eliminar {
     font-size: 20px;
     cursor: pointer;
@@ -224,7 +207,7 @@ body{
     border: none;
     position: fixed;
     left: 10px;
-    top: 350px;
+    top: 300px;
     margin-right: 0px;
     border-radius: 10px;
     border: 3px solid black;

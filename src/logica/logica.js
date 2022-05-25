@@ -12,7 +12,7 @@ const main = document.getElementById("main");
 const herramientas = document.getElementById("herramientas");
 
 /**
- * Sube datos a Firestore Storage
+ * Sube datos a Firestore Storage y colocar el mapa
  * file -> subirDatos -> 
  */
 async function subirDatos(file){
@@ -44,7 +44,7 @@ async function subirDatos(file){
 }
 
 /**
- * Sube datos a Firestore Storage
+ * Actualiza el plano subido a storage
  * file -> actualizarPlano -> 
  */
  async function actualizarPlano(file){
@@ -115,51 +115,84 @@ async function recogerImagen(){
     }
 }
 
+/**
+ * Dibuja la ruta de puntos dado el canvas, el click y los puntos ya existentes
+ * canvas, event, ctx, puntos -> dibujarRuta -> puntos
+ */
 function dibujarRuta(canvas, event, ctx, puntos){
+
+    // Recogemos el tamaño del canvas
     let width = canvas.offsetWidth;
     let height = canvas.offsetHeight;
     let rect = canvas.getBoundingClientRect();
+
+    // Vemos donde s ha pulsado y lo hacemos a escala 0-100
+    // Se multiplica por 1000 porque esa es la resolucion base del canvas
     let x = ((event.clientX - rect.left)/width)*1000;
     let y = ((event.clientY - rect.top)/height)*1000;
 
+    // Añadimos los puntos a la lista de puntos existentes
     puntos.push(x);
     puntos.push(y);
 
     //console.log("Coordinate x: " + x, "Coordinate y: " + y);
+    // Dibujamos la linea
     ctx.fillStyle = '#f00';
     ctx.lineTo(x,y);
     ctx.stroke();
 }
 
+/**
+ * Dibuja el circulo de la foto dado el canvas, el click y los puntos ya existentes
+ * canvas, event, ctx, puntos -> dibujarCirculo -> puntos
+ */
 function dibujarCirculo(canvas, event, ctx, punto){
+
+    // Recogemos el tamaño del canvas
     let width = canvas.offsetWidth;
     let height = canvas.offsetHeight;
     let rect = canvas.getBoundingClientRect();
+
+    // Vemos donde s ha pulsado y lo hacemos a escala 0-100
+    // Se multiplica por 1000 porque esa es la resolucion base del canvas
     let x = ((event.clientX - rect.left)/width)*1000;
     let y = ((event.clientY - rect.top)/height)*1000;
 
+    // Añadimos los puntos a la lista de puntos existentes
     punto.push(x);
     punto.push(y);
 
+    // Dibujamos el circulo
     ctx.beginPath();
     ctx.arc(x, y, 5, 0, 10);
     ctx.fill();
 }
 
+/**
+ * Usa el canvas y el diccionario de orden para redibujar los puntos que deberian estar en el canvas
+ * canvas, ctx, orden -> reDibujarPlano ->
+ */
 function reDibujarPlano(canvas, ctx, orden){
+    
+    // Limpiamos el canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    // Recogemos las keys
     var keys = Object.keys(orden);
     var punticos = [];
     //console.log(keys.length);
     let result = "";
     
+    // Miramos que contiene el diccionario
     for(var i = 0; i < keys.length; i++){
 
         result = keys[i].slice(0, 1);
         //console.log(keys[i]);
+
         // Si es una foto
         if(result == "F"){
+
+            // Dibujamos un circulo
             ctx.beginPath();
             //console.log("Entro foto");
             punticos = orden[keys[i]];
@@ -171,8 +204,10 @@ function reDibujarPlano(canvas, ctx, orden){
             
         }
 
+        // Si es una ruta
         else if(result == "R"){
 
+            // Dibujamos una ruta
             ctx.beginPath();
             //console.log("Entro ruta");
             punticos = orden[keys[i]];
@@ -188,13 +223,15 @@ function reDibujarPlano(canvas, ctx, orden){
     
 }
 
-async function subirRuta(orden, ordenDeAcciones, canvas){
-
-    var keys = Object.keys(orden);
-    //console.log(keys.length);
+/**
+ * Se crea un JSON para subir los datos de los puntos a firebase
+ * orden, ordenDeAcciones -> subirRuta ->
+ */
+async function subirRuta(orden, ordenDeAcciones){
+    
     let result = "";
-    var subida = [];
 
+    // Dentro del JSON tenemos un marcador de tiempo y un msg, que es donde iran los puntos
     let JSON = {
         time: new Date().getTime(),
         msg:[
@@ -206,12 +243,14 @@ async function subirRuta(orden, ordenDeAcciones, canvas){
     for(var i = 0; i < ordenDeAcciones.length; i++){
 
         result = ordenDeAcciones[i].slice(0, 1);
-        //console.log(ordenDeAcciones[i]);
 
         // Si es una foto
         if(result == "F"){
+            
+            // Obtenemos los puntos
             var puntos = orden[ordenDeAcciones[i]];
             
+            // Los creamos con formato JSON, el tipo indica que es una foto, el primer par es la posicion y el segundo la orientacion
             let punto ={
                 tipo: "foto",
                 posicion: {
@@ -224,11 +263,13 @@ async function subirRuta(orden, ordenDeAcciones, canvas){
                 }
             }
 
+            // Se añade al JSON
             JSON.msg.push(punto);
         }
 
         else if(result == "R"){
 
+            // Se crea el JSON especificando que es una ruta
             let punto ={
                 tipo: "ruta",
                 posiciones: [
@@ -236,9 +277,9 @@ async function subirRuta(orden, ordenDeAcciones, canvas){
                 ]
             }
 
+
             var puntos = orden[ordenDeAcciones[i]];
 
-            let text = '{ '+ ordenDeAcciones[i] +' : [';
             for(var j = 0; j < puntos.length; j = j+2){
 
                 let pos = {
@@ -250,27 +291,34 @@ async function subirRuta(orden, ordenDeAcciones, canvas){
 
             }
 
-            //console.log(text);
-            subida.push(text);
+            // Se añade al JSON
             JSON.msg.push(punto);
         }
     }
 
-    // Add a new document in collection "cities"
+    // Recogemos el codigoDeVerificacion de este usuario
     var codigoVer = localStorage.getItem("CodigoVer");
     let texto = codigoVer + "-web"
+
+    // Lo subimos a database
     await setDoc(doc(db, "orden", texto), {
         JSON: JSON
-     });
+    });
 
+    // Lo subimos a realtime
     set(storageRef(database, +codigoVer+'-web/'), JSON);
 }
 
+/**
+ * Se crea un JSON para subir los datos de los puntos a firebase
+ * orden, ordenDeAcciones, c, ctx -> recogerRuta ->
+ */
 async function recogerRuta(orden, ordenDeAcciones, c, ctx){
     
     var i = 0;
     var lista = [];
 
+    // Lo recogemos de database
     const q = query(collection(db, "orden"));
 
     // Obtenemos los documentos en forma de objetos DocumentSnapshots
@@ -280,6 +328,7 @@ async function recogerRuta(orden, ordenDeAcciones, c, ctx){
             let valores = doc.data();
             let result = valores.JSON;
 
+            // Desglosamos el mensaje JSON y lo añadimos a los puntos
             result.msg.forEach(element => {
                 if (element.tipo == "ruta") {
                     let texto = "Ruta" + i;
@@ -302,8 +351,14 @@ async function recogerRuta(orden, ordenDeAcciones, c, ctx){
                     ordenDeAcciones.push(texto);
                     i++;
             }})
+
+            // Llamamos a redibujarPlano
             reDibujarPlano(c,ctx, orden);
+            
+            // Actualizamos el numero de ruta
             localStorage.setItem("nRuta", i);
+            
+            // Actualizamos el orden
             actualizarOrden(ordenDeAcciones);
         })
 
@@ -313,18 +368,25 @@ async function recogerRuta(orden, ordenDeAcciones, c, ctx){
       
 }
 
+/**
+ * Actualiza el orden de acciones de la pagina
+ * ordenDeAcciones -> actualizarOrden ->
+ */
 function actualizarOrden(ordenDeAcciones){
     
+    // Buscamos el elemento
     const sideBar = document.getElementById("mySidebar");
 
     for(var i = 0; i < ordenDeAcciones.length; i++){
 
         var result = ordenDeAcciones[i].slice(0, 1);
 
+        // Si es una foto
         if(result == "F"){
             var text = ordenDeAcciones[i];
             const collection = document.getElementById(text);
 
+            // Si existe un elemento con esa id lo eliminamos y creamos uno nuevo
             if(collection!=null){
                 collection.remove();
             }
@@ -338,14 +400,15 @@ function actualizarOrden(ordenDeAcciones){
             sideBar.appendChild(element);
         }
 
+        // Si es una ruta
         if(result == "R"){
             var text = ordenDeAcciones[i];
             const collection = document.getElementById(text);
 
+            // Si existe un elemento con esa id lo eliminamos y creamos uno nuevo
             if(collection!=null){
                 collection.remove();
             }
-
         
             var element = document.createElement(text);
     
@@ -363,17 +426,30 @@ function actualizarOrden(ordenDeAcciones){
 // A partir de aqui es la pagina de alertas
 //
 
+/**
+ * Recoge las predicciones de realtime y las añade en una lista
+ * body -> recogerAlertas ->
+ */
 async function recogerAlertas(body){
     // Hace una busqueda en la base de datos y recibe una lista de las alertas
     var alertas = ["Test 1", "Test 2", "testFinal"];
+    
+    // Crea las alertas 
     crearAlertas(alertas, body);
 }
 
+/**
+ * Recoge las predicciones de realtime y las añade en una lista
+ * alertas -> crearAlertas ->
+ */
 function crearAlertas(alertas){
 
+    // Recogemos las imagenes de realtime
     get(storageRef(database, "-app")).then((snapshot) => {
         if (snapshot.exists()) {
             console.log(snapshot.val());
+            
+            // Añadimos las imagenes
             var datos = snapshot.val().msg[0].images[0];
             console.log(datos);
             /*
@@ -382,6 +458,8 @@ function crearAlertas(alertas){
             element.innerHTML = `<img src="${datos}">`;
             document.body.appendChild(element);
             */
+
+            // Si existen alertas
             if(alertas != null){
                 var lista = [];
                 for(var i = 0; i < alertas.length; i++){
@@ -411,6 +489,8 @@ function crearAlertas(alertas){
                                             </div>
                                         </div>`;
                     document.body.appendChild(element);
+
+                    // Incluimos los identificadores en el local storage
                     var text = "imagenes"+i;
                     localStorage.setItem(text, datos);
                     var text = "alertasTexto"+i;
@@ -428,31 +508,5 @@ function crearAlertas(alertas){
       console.error(error);
     });
 }
-
-/**
- * Recoge cada varios segundos el mensaje del realtime y si es nuevo guarda su imagen en storage
- */
-/*
-function startImageService() {
-    setInterval(function waitForImage() {
-        var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
-        // TODO: debe utilizar la ID del robot
-        fetch(Constants.url + `123456789-app.json`, requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            console.log(result);
-            try {
-                actualizarPlano(result.msg[0].image)
-            } catch (error) {
-                console.error(error);
-            }
-        })
-        .catch(error => console.error(error));
-    }, 5000);
-}
-*/
 
 export { subirDatos, actualizarPlano, recogerImagen, dibujarRuta, dibujarCirculo, reDibujarPlano, subirRuta, recogerRuta, recogerAlertas, actualizarOrden};
