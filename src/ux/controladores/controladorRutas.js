@@ -1,6 +1,6 @@
 // Nombre fichero: controladorRutas.js
 // Fecha: WIP
-// Autor: Jorge Grau Giannakakis
+// Autores: Jorge Grau Giannakakis, Luis Belloch Martinez
 // Descripción: El controlador de la pagina rutas, llama a las funciones de la logica que necesite
 
 import { subirDatos, recogerImagen, dibujarRuta, dibujarCirculo, reDibujarPlano, subirRuta, recogerRuta, actualizarPlano, actualizarOrden} from '../../logica/logica.js'
@@ -125,7 +125,6 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         fotoActivada = true;
       }
       else{
-
         if(contador == 0){
           resetHerramientas();
         }
@@ -281,5 +280,6 @@ function guardarRutaPuntos(){
     // Lo añadimos al ordenes
     ordenes.push(nuevaOrden);
     reDibujarPlano(c, ctx, ordenes);
+    actualizarOrden(ordenes);
   }
 }

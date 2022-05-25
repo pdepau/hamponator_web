@@ -1,6 +1,6 @@
 // Nombre fichero: logica.js
 // Fecha: WIP
-// Autor: Jorge Grau Giannakakis
+// Autores: Jorge Grau Giannakakis, Luis Belloch Martinez
 // Descripción: Gestiona la logica del centro de datos
 
 import {dbStorage, database, getStorage, ref, uploadBytes, getDownloadURL, firebaseAuth, setDoc, doc, set, db, storageRef, collection, query, where, getDocs, get, child} from '../firebase.js';
@@ -179,10 +179,9 @@ function reDibujarPlano(canvas, ctx, orden){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // Recogemos las keys
+    // Es redundante porque orden es una lista pero me da pereza cambiarlo (Luis)
     var keys = Object.keys(orden);
     var punticos = [];
-    //console.log(keys.length);
-    let result = "";
     
     // Tomamos los puntos de orden
     for (let i = 0; i < keys.length; i++) {
@@ -213,11 +212,23 @@ function reDibujarPlano(canvas, ctx, orden){
                     ctx.moveTo(punticos[j-1].x*10, punticos[j-1].y*10);
                     ctx.lineTo(punticos[j].x*10, punticos[j].y*10);
                     ctx.stroke();
-                }
-            }
-        }
-    }
-}
+                } // if
+            } // for
+            // si es de tipo foto
+        } else if (orden[keys[i]].tipo == "foto") {
+            // dibuja el circulo de color rojo
+            ctx.fillStyle = '#f00';
+            ctx.beginPath();
+            ctx.arc(orden[keys[i]].posicion.x*10, orden[keys[i]].posicion.y*10, 5, 0, 10);    
+            ctx.fill();
+            // dibuja el circulo de orientacion de color azul
+            ctx.fillStyle = '#00f';
+            ctx.beginPath();
+            ctx.arc(orden[keys[i]].orientacion.x*10, orden[keys[i]].orientacion.y*10, 5, 0, 10);
+            ctx.fill();
+        } // if
+    } // for
+} // ()
 
 /**
  * Se crea un JSON para subir los datos de los puntos a firebase
@@ -287,53 +298,48 @@ async function recogerRuta(orden, ordenDeAcciones, c, ctx){
  * Actualiza el orden de acciones de la pagina
  * ordenDeAcciones -> actualizarOrden ->
  */
-function actualizarOrden(ordenDeAcciones){
+function actualizarOrden(ordenes){
     
     // Buscamos el elemento
     const sideBar = document.getElementById("mySidebar");
 
-    for(var i = 0; i < ordenDeAcciones.length; i++){
-
-        var result = ordenDeAcciones[i].slice(0, 1);
+    for(var i = 0; i < ordenes.length; i++){
 
         // Si es una foto
-        if(result == "F"){
-            var text = ordenDeAcciones[i];
-            const collection = document.getElementById(text);
+        if(ordenes[i].tipo == "foto"){
+            const collection = document.getElementById(ordenes[i].id);
 
             // Si existe un elemento con esa id lo eliminamos y creamos uno nuevo
             if(collection!=null){
                 collection.remove();
             }
 
-            var element = document.createElement(text);
+            var element = document.createElement(ordenes[i].id);
     
-            element.innerHTML = `<div class = "orden" id=${text}>
+            element.innerHTML = `<div class = "orden" id=${ordenes[i].id}>
                                     <img src="../ux/img/camera-solid.svg" alt="icono" class = "imagen">
-                                    <p class = "texto">${text}</p>
+                                    <p class = "texto">${ordenes[i].id}</p>
                                 </div>`;
             sideBar.appendChild(element);
         }
 
         // Si es una ruta
-        if(result == "R"){
-            var text = ordenDeAcciones[i];
-            const collection = document.getElementById(text);
+        if(ordenes[i].tipo == "ruta"){
+            const collection = document.getElementById(ordenes[i].id);
 
             // Si existe un elemento con esa id lo eliminamos y creamos uno nuevo
             if(collection!=null){
                 collection.remove();
             }
         
-            var element = document.createElement(text);
+            var element = document.createElement(ordenes[i].id);
     
-            element.innerHTML = `<div class = "orden" id=${text}>
+            element.innerHTML = `<div class = "orden" id=${ordenes[i].id}>
                                     <img src="../ux/img/route-solid.svg" alt="icono" class = "imagen">
-                                    <p class = "texto">${text}</p>
+                                    <p class = "texto">${ordenes[i].id}</p>
                                 </div>`;
             sideBar.appendChild(element);
         }
-
     }
 }
 
