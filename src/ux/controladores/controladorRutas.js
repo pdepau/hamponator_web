@@ -47,7 +47,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
 
   // Recogemos ruta de firebase
   if(codigoVer.length == 9){
-    recogerRuta(ordenes, ordenDeAcciones, c, ctx);
+    recogerRuta(ordenes, c, ctx, guardarOrdenes);
     nRuta = localStorage.getItem("nRuta");
   }
 
@@ -134,7 +134,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
           ordenDeAcciones.push(texto);
           punto = [];
           nRuta++;
-          actualizarOrden(ordenDeAcciones);
+          actualizarOrden(ordenes);
           resetHerramientas();
         }
       }
@@ -147,7 +147,6 @@ window.addEventListener("DOMContentLoaded", async (e) => {
       subirRuta(ordenes, canvasElem);
       console.log("Rutas (ordenes)");
       console.log(ordenes);
-      console.log("Orden de acciones: " + ordenDeAcciones);
     });
     
     // Boton borrar
@@ -185,7 +184,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
       }
 
       ordenDeAcciones = [];
-      actualizarOrden(ordenDeAcciones);
+      actualizarOrden(ordenes);
     });
 
     // Gestor del canvas
@@ -194,7 +193,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
     {
       if(rutaActivada){
         dibujarRuta(canvasElem, e, ctx, puntos);
-        actualizarOrden(ordenDeAcciones);
+        actualizarOrden(ordenes);
       }
       if(fotoActivada){
         contador++;
@@ -202,55 +201,50 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         if(contador == 2){
           contador = 0;
           let texto = "Foto" + nRuta;
-          ordenes[texto] = punto;
-          ordenDeAcciones.push(texto);
+          let nuevaOrden = {
+            id: texto,
+            tipo: "foto",
+            orientacion: {x: punto[1].x, y: punto[1].y},
+            posicion: {x: punto[0].x, y: punto[0].y},
+          }
+          ordenes.push(nuevaOrden);
           punto = [];
           nRuta++;
-          actualizarOrden(ordenDeAcciones);
+          actualizarOrden(ordenes);
           resetHerramientas();
+          reDibujarPlano(c, ctx, ordenes);
         }
       }
       if(borrarActivada){
         let width = c.offsetWidth;
         let height = c.offsetHeight;
         let rect = c.getBoundingClientRect();
-        let x = ((e.clientX - rect.left)/width)*1000;
-        let y = ((e.clientY - rect.top)/height)*1000;
+        let x = ((e.clientX - rect.left)/width)*1000/10;
+        let y = ((e.clientY - rect.top)/height)*1000/10;
 
-        for (var key in ordenes){
-          //key will be -> 'id'
-          //dictionary[key] -> 'value'
-          punticos = ordenes[key];
-          for(var i = 0; i < punticos.length; i++){
-            if(x+10 > punticos[i] && x-10 < punticos[i] && y+10 > punticos[i+1] && y-10 < punticos[i+1]){
-              cosicasDeBorrar.push(key);
+        // recorre las ordenes
+        for (let i = 0; i < ordenes.length; i++) {
+          // si la orden es de tipo foto
+          if(ordenes[i].tipo == "foto"){
+            // comprueba que su posicion estan a menos distancia de 10 de x e y
+            if(Math.abs(ordenes[i].posicion.x - x) < 2 && Math.abs(ordenes[i].posicion.y - y) < 2){
+              console.log("Foto borrada");
+              ordenes.splice(i, 1);
             }
-          }
-        }
-        for(var i = 0; i < cosicasDeBorrar.length; i++){
-          delete ordenes[cosicasDeBorrar[i]];
-        }
-
-        for(var i = 0; i < cosicasDeBorrar.length; i++){
-
-          var text = cosicasDeBorrar[i];
-          for(var j = 0; j < ordenDeAcciones.length; j++){
-            if(text == ordenDeAcciones[j]){
-              var text = ordenDeAcciones[j];
-              const collection = document.getElementById(text);
-
-              if(collection!=null){
-                  collection.remove();
+          // si es del tipo ruta
+          }else if(ordenes[i].tipo == "ruta"){
+            // comprueba si alguno de sus puntos esta a menos distancia de 10 de x e y
+            for (let j = 0; j < ordenes[i].puntos.length; j++) {
+              if(Math.abs(ordenes[i].puntos[j].x - x) < 2 && Math.abs(ordenes[i].puntos[j].y - y) < 2){
+                console.log("Ruta borrada");
+                ordenes.splice(i, 1);
               }
-              ordenDeAcciones.splice(j, 1);
-            }
-          }
-        }
+            } // for
+          } // else
+        } // for
         
         reDibujarPlano(c,ctx, ordenes);
-        cosicasDeBorrar = [];
-        actualizarOrden(ordenDeAcciones);
-        
+        actualizarOrden(ordenes);
       }
     });
     
@@ -263,7 +257,7 @@ function resetHerramientas(){
   ruta.style.backgroundColor = '#820053';
   foto.style.backgroundColor = '#820053';
   borrar.style.backgroundColor = '#820053';
-  actualizarOrden(ordenDeAcciones);
+  actualizarOrden(ordenes);
 }
 
 function guardarRutaPuntos(){
@@ -282,4 +276,14 @@ function guardarRutaPuntos(){
     reDibujarPlano(c, ctx, ordenes);
     actualizarOrden(ordenes);
   }
+}
+
+/**
+ * Guarda una lista de ordenes en las ordenes actuales. Llamado cuando se reciben de Firebase
+ * @param {array} listaOrdenes 
+ */
+function guardarOrdenes(listaOrdenes) {
+  ordenes = listaOrdenes;
+  // Llamamos a redibujarPlano
+  reDibujarPlano(c,ctx, ordenes);
 }

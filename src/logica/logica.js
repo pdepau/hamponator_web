@@ -160,10 +160,10 @@ function dibujarCirculo(canvas, event, ctx, punto){
     let y = ((event.clientY - rect.top)/height)*1000;
 
     // Añadimos los puntos a la lista de puntos existentes
-    punto.push(x);
-    punto.push(y);
+    punto.push({x: x/10, y: y/10});
 
     // Dibujamos el circulo
+    ctx.fillStyle = '#00f';
     ctx.beginPath();
     ctx.arc(x, y, 5, 0, 10);
     ctx.fill();
@@ -174,7 +174,7 @@ function dibujarCirculo(canvas, event, ctx, punto){
  * canvas, ctx, orden -> reDibujarPlano ->
  */
 function reDibujarPlano(canvas, ctx, orden){
-    
+
     // Limpiamos el canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
@@ -197,6 +197,17 @@ function reDibujarPlano(canvas, ctx, orden){
                 // toma el primer punto de esta
                 let primero = punticos[0];
                 // une los puntos con una linea
+                ctx.beginPath();
+                ctx.moveTo(ultimo.x*10, ultimo.y*10);
+                ctx.lineTo(primero.x*10, primero.y*10);
+                ctx.stroke();
+            }
+            // Si el anterior era una foto une el ultimo con la posicion de la foto
+            else if (i != 0 && orden[keys[i-1]].tipo == "foto") {
+                // toma el ultimo punto de la anterior
+                let ultimo = orden[keys[i-1]].posicion;
+                // toma el primer punto de esta
+                let primero = punticos[0];
                 ctx.beginPath();
                 ctx.moveTo(ultimo.x*10, ultimo.y*10);
                 ctx.lineTo(primero.x*10, primero.y*10);
@@ -226,6 +237,32 @@ function reDibujarPlano(canvas, ctx, orden){
             ctx.beginPath();
             ctx.arc(orden[keys[i]].orientacion.x*10, orden[keys[i]].orientacion.y*10, 5, 0, 10);
             ctx.fill();
+            // Dibuja una flecha desde la posicion hasta la orientacion
+            ctx.beginPath();
+            ctx.moveTo(orden[keys[i]].posicion.x*10, orden[keys[i]].posicion.y*10);
+            ctx.lineTo(orden[keys[i]].orientacion.x*10, orden[keys[i]].orientacion.y*10);
+            ctx.stroke();
+            // si el anterior era una ruta, une el circulo de posicion a la ultima
+            // posicion de la ruta
+            if (i != 0 && orden[keys[i-1]].tipo == "ruta") {
+                // toma el ultimo punto de la anterior
+                let ultimo = orden[keys[i-1]].puntos[orden[keys[i-1]].puntos.length-1];
+                // une los puntos con una linea
+                ctx.beginPath();
+                ctx.moveTo(ultimo.x*10, ultimo.y*10);
+                ctx.lineTo(orden[keys[i]].posicion.x*10, orden[keys[i]].posicion.y*10);
+                ctx.stroke();
+            }
+            // si el ultimo era una foto une ambos puntos de posicion
+            if (i != 0 && orden[keys[i-1]].tipo == "foto") {
+                // toma el ultimo punto de la anterior
+                let ultimo = orden[keys[i-1]].posicion;
+                // une los puntos con una linea
+                ctx.beginPath();
+                ctx.moveTo(ultimo.x*10, ultimo.y*10);
+                ctx.lineTo(orden[keys[i]].posicion.x*10, orden[keys[i]].posicion.y*10);
+                ctx.stroke();
+            }
         } // if
     } // for
 } // ()
@@ -239,10 +276,8 @@ async function subirRuta(orden, canvasElem){
     // Dentro del JSON tenemos un marcador de tiempo y un msg, que es donde iran los puntos
     let JSON = {
         time: new Date().getTime(),
-        msg: null
+        msg: orden
     }
-
-    JSON.msg = orden;
 
     // Recogemos el codigoDeVerificacion de este usuario
     var codigoVer = localStorage.getItem("CodigoVer");
@@ -261,10 +296,7 @@ async function subirRuta(orden, canvasElem){
  * Se crea un JSON para subir los datos de los puntos a firebase
  * orden, ordenDeAcciones, c, ctx -> recogerRuta ->
  */
-async function recogerRuta(orden, ordenDeAcciones, c, ctx){
-    
-    var i = 0;
-    var lista = [];
+async function recogerRuta(orden, c, ctx, callback){
 
     // Lo recogemos de database
     const q = query(collection(db, "orden"));
@@ -279,19 +311,17 @@ async function recogerRuta(orden, ordenDeAcciones, c, ctx){
             orden = result.msg;
 
             console.log("Orden recibido de Firebase:")
-            console.log(result.msg)
+            console.log(result)
 
-            // Llamamos a redibujarPlano
-            reDibujarPlano(c,ctx, orden);
+            // Las guardamos en controladorRutas
+            callback(orden);
             
             // Actualizamos el numero de ruta
-            localStorage.setItem("nRuta", i);
+            localStorage.setItem("nRuta", orden.length);
         })
 
         return;
     }).catch(error => { });
-    
-      
 }
 
 /**
