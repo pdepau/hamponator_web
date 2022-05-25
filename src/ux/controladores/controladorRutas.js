@@ -124,25 +124,32 @@ window.addEventListener("DOMContentLoaded", async (e) => {
     // Boton foto
     foto.addEventListener('click', async (e) => {
       if(fotoActivada == false){
-        resetHerramientas();
+        guardarRutaPuntos();
         foto.style.backgroundColor = '#edb506';
         ctx.fillStyle = '#f00';
         ctx.beginPath();
         fotoActivada = true;
       }
       else{
-        let texto = "Foto" + nRuta;
-        orden[texto] = punto;
-        ordenDeAcciones.push(texto);
-        punto = [];
-        nRuta++;
-        actualizarOrden(ordenDeAcciones);
-        resetHerramientas();
+
+        if(contador == 0){
+          resetHerramientas();
+        }
+        else if(punto.length > 0 && contador > 1){
+          let texto = "Foto" + nRuta;
+          orden[texto] = punto;
+          ordenDeAcciones.push(texto);
+          punto = [];
+          nRuta++;
+          actualizarOrden(ordenDeAcciones);
+          resetHerramientas();
+        }
       }
     });
 
     // Boton guardar
     guardar.addEventListener('click', async (e) => {
+      guardarRutaPuntos();
       // Se sube la configuracion a la base de datos, la configuracion es el diccionario orden y el orden valga la redundancia
       subirRuta(orden, ordenDeAcciones, canvasElem);
     });
@@ -152,7 +159,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
       // Al hacer click en un sitio busca los putnos adyacentes y los borra
       // Se hace un clear y se redibujan con el diccionario orden
       if(borrarActivada == false){
-        resetHerramientas();
+        guardarRutaPuntos();
         borrar.style.backgroundColor = '#edb506';
         ctx.fillStyle = '#f00';
         ctx.beginPath();
@@ -166,6 +173,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
 
     // Elimina todas las marcas del canvas
     eliminar.addEventListener('click', async (e) => {
+      guardarRutaPuntos();
       ctx.clearRect(0, 0, c.width, c.height);
       orden = {};
 
@@ -258,4 +266,16 @@ function resetHerramientas(){
   foto.style.backgroundColor = '#820053';
   borrar.style.backgroundColor = '#820053';
   actualizarOrden(ordenDeAcciones);
+}
+
+function guardarRutaPuntos(){
+  if(puntos.length > 0){
+    let texto = "Ruta" + nRuta;
+    orden[texto] = puntos;
+    ordenDeAcciones.push(texto);
+    puntos = [];
+    nRuta++;
+    actualizarOrden(ordenDeAcciones);
+  }
+  resetHerramientas();
 }
