@@ -173,6 +173,8 @@ window.addEventListener("DOMContentLoaded", async (e) => {
 
     // Elimina todas las marcas del canvas
     eliminar.addEventListener('click', async (e) => {
+      punto = [];
+      puntos = [];
       guardarRutaPuntos();
       ctx.clearRect(0, 0, c.width, c.height);
       orden = {};
