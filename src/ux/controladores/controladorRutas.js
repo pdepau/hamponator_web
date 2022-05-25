@@ -1,6 +1,6 @@
 // Nombre fichero: controladorRutas.js
 // Fecha: WIP
-// Autor: Jorge Grau Giannakakis
+// Autores: Jorge Grau Giannakakis, Luis Belloch Martinez
 // Descripción: El controlador de la pagina rutas, llama a las funciones de la logica que necesite
 
 import { subirDatos, recogerImagen, dibujarRuta, dibujarCirculo, reDibujarPlano, subirRuta, recogerRuta, actualizarPlano, actualizarOrden} from '../../logica/logica.js'
@@ -19,7 +19,7 @@ var ctx = c.getContext("2d");
 
 var punto = []
 var puntos = []
-var orden = {};
+var ordenes = [];
 var nRuta = 0;
 var contador = 0;
 
@@ -47,7 +47,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
 
   // Recogemos ruta de firebase
   if(codigoVer.length == 9){
-    recogerRuta(orden, ordenDeAcciones, c, ctx);
+    recogerRuta(ordenes, c, ctx, guardarOrdenes);
     nRuta = localStorage.getItem("nRuta");
   }
 
@@ -99,7 +99,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
   
     });
 
-    // Boton ruta
+    // Boton ruta crear y guardar
     ruta.addEventListener('click', async (e) => {
       if(rutaActivada == false){
         resetHerramientas();
@@ -109,14 +109,8 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         rutaActivada = true;
       }
       else{ 
-        if(puntos.length > 0){
-          let texto = "Ruta" + nRuta;
-          orden[texto] = puntos;
-          ordenDeAcciones.push(texto);
-          puntos = [];
-          nRuta++;
-          actualizarOrden(ordenDeAcciones);
-        }
+        // si ya se han puesto puntos, se guarda la ruta en el ordenes
+        guardarRutaPuntos();
         resetHerramientas();
       }
     });
@@ -131,17 +125,16 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         fotoActivada = true;
       }
       else{
-
         if(contador == 0){
           resetHerramientas();
         }
         else if(punto.length > 0 && contador > 1){
           let texto = "Foto" + nRuta;
-          orden[texto] = punto;
+          ordenes[texto] = punto;
           ordenDeAcciones.push(texto);
           punto = [];
           nRuta++;
-          actualizarOrden(ordenDeAcciones);
+          actualizarOrden(ordenes);
           resetHerramientas();
         }
       }
@@ -150,14 +143,16 @@ window.addEventListener("DOMContentLoaded", async (e) => {
     // Boton guardar
     guardar.addEventListener('click', async (e) => {
       guardarRutaPuntos();
-      // Se sube la configuracion a la base de datos, la configuracion es el diccionario orden y el orden valga la redundancia
-      subirRuta(orden, ordenDeAcciones, canvasElem);
+      // Se sube la configuracion a la base de datos, la configuracion es el diccionario ordenes y el ordenes valga la redundancia
+      subirRuta(ordenes, canvasElem);
+      console.log("Rutas (ordenes)");
+      console.log(ordenes);
     });
     
     // Boton borrar
     borrar.addEventListener('click', async (e) => {
       // Al hacer click en un sitio busca los putnos adyacentes y los borra
-      // Se hace un clear y se redibujan con el diccionario orden
+      // Se hace un clear y se redibujan con el diccionario ordenes
       if(borrarActivada == false){
         guardarRutaPuntos();
         borrar.style.backgroundColor = '#edb506';
@@ -177,7 +172,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
       puntos = [];
       guardarRutaPuntos();
       ctx.clearRect(0, 0, c.width, c.height);
-      orden = {};
+      ordenes = [];
 
       for(var j = 0; j < ordenDeAcciones.length; j++){
         var text = ordenDeAcciones[j];
@@ -189,7 +184,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
       }
 
       ordenDeAcciones = [];
-      actualizarOrden(ordenDeAcciones);
+      actualizarOrden(ordenes);
     });
 
     // Gestor del canvas
@@ -198,7 +193,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
     {
       if(rutaActivada){
         dibujarRuta(canvasElem, e, ctx, puntos);
-        actualizarOrden(ordenDeAcciones);
+        actualizarOrden(ordenes);
       }
       if(fotoActivada){
         contador++;
@@ -206,55 +201,50 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         if(contador == 2){
           contador = 0;
           let texto = "Foto" + nRuta;
-          orden[texto] = punto;
-          ordenDeAcciones.push(texto);
+          let nuevaOrden = {
+            id: texto,
+            tipo: "foto",
+            orientacion: {x: punto[1].x, y: punto[1].y},
+            posicion: {x: punto[0].x, y: punto[0].y},
+          }
+          ordenes.push(nuevaOrden);
           punto = [];
           nRuta++;
-          actualizarOrden(ordenDeAcciones);
+          actualizarOrden(ordenes);
           resetHerramientas();
+          reDibujarPlano(c, ctx, ordenes);
         }
       }
       if(borrarActivada){
         let width = c.offsetWidth;
         let height = c.offsetHeight;
         let rect = c.getBoundingClientRect();
-        let x = ((e.clientX - rect.left)/width)*1000;
-        let y = ((e.clientY - rect.top)/height)*1000;
+        let x = ((e.clientX - rect.left)/width)*1000/10;
+        let y = ((e.clientY - rect.top)/height)*1000/10;
 
-        for (var key in orden){
-          //key will be -> 'id'
-          //dictionary[key] -> 'value'
-          punticos = orden[key];
-          for(var i = 0; i < punticos.length; i++){
-            if(x+10 > punticos[i] && x-10 < punticos[i] && y+10 > punticos[i+1] && y-10 < punticos[i+1]){
-              cosicasDeBorrar.push(key);
+        // recorre las ordenes
+        for (let i = 0; i < ordenes.length; i++) {
+          // si la orden es de tipo foto
+          if(ordenes[i].tipo == "foto"){
+            // comprueba que su posicion estan a menos distancia de 10 de x e y
+            if(Math.abs(ordenes[i].posicion.x - x) < 2 && Math.abs(ordenes[i].posicion.y - y) < 2){
+              console.log("Foto borrada");
+              ordenes.splice(i, 1);
             }
-          }
-        }
-        for(var i = 0; i < cosicasDeBorrar.length; i++){
-          delete orden[cosicasDeBorrar[i]];
-        }
-
-        for(var i = 0; i < cosicasDeBorrar.length; i++){
-
-          var text = cosicasDeBorrar[i];
-          for(var j = 0; j < ordenDeAcciones.length; j++){
-            if(text == ordenDeAcciones[j]){
-              var text = ordenDeAcciones[j];
-              const collection = document.getElementById(text);
-
-              if(collection!=null){
-                  collection.remove();
+          // si es del tipo ruta
+          }else if(ordenes[i].tipo == "ruta"){
+            // comprueba si alguno de sus puntos esta a menos distancia de 10 de x e y
+            for (let j = 0; j < ordenes[i].puntos.length; j++) {
+              if(Math.abs(ordenes[i].puntos[j].x - x) < 2 && Math.abs(ordenes[i].puntos[j].y - y) < 2){
+                console.log("Ruta borrada");
+                ordenes.splice(i, 1);
               }
-              ordenDeAcciones.splice(j, 1);
-            }
-          }
-        }
+            } // for
+          } // else
+        } // for
         
-        reDibujarPlano(c,ctx, orden);
-        cosicasDeBorrar = [];
-        actualizarOrden(ordenDeAcciones);
-        
+        reDibujarPlano(c,ctx, ordenes);
+        actualizarOrden(ordenes);
       }
     });
     
@@ -267,17 +257,33 @@ function resetHerramientas(){
   ruta.style.backgroundColor = '#820053';
   foto.style.backgroundColor = '#820053';
   borrar.style.backgroundColor = '#820053';
-  actualizarOrden(ordenDeAcciones);
+  actualizarOrden(ordenes);
 }
 
 function guardarRutaPuntos(){
   if(puntos.length > 0){
-    let texto = "Ruta" + nRuta;
-    orden[texto] = puntos;
-    ordenDeAcciones.push(texto);
+    let nuevaOrden = {
+      id: "Ruta" + nRuta,
+      tipo: "ruta",
+      puntos: puntos
+    }
+    // vaciamos los puntos
     puntos = [];
+    // Aumentamos en 1 las rutas creadas
     nRuta++;
-    actualizarOrden(ordenDeAcciones);
+    // Lo añadimos al ordenes
+    ordenes.push(nuevaOrden);
+    reDibujarPlano(c, ctx, ordenes);
+    actualizarOrden(ordenes);
   }
-  resetHerramientas();
+}
+
+/**
+ * Guarda una lista de ordenes en las ordenes actuales. Llamado cuando se reciben de Firebase
+ * @param {array} listaOrdenes 
+ */
+function guardarOrdenes(listaOrdenes) {
+  ordenes = listaOrdenes;
+  // Llamamos a redibujarPlano
+  reDibujarPlano(c,ctx, ordenes);
 }
