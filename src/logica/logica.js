@@ -332,12 +332,14 @@ function actualizarOrden(ordenes){
     
     // Buscamos el elemento
     const sideBar = document.getElementById("mySidebar");
+    sideBar.innerHTML = "";
 
     for(var i = 0; i < ordenes.length; i++){
+        const collection = document.getElementById(ordenes[i].id);
+        
 
         // Si es una foto
         if(ordenes[i].tipo == "foto"){
-            const collection = document.getElementById(ordenes[i].id);
 
             // Si existe un elemento con esa id lo eliminamos y creamos uno nuevo
             if(collection!=null){
@@ -355,7 +357,6 @@ function actualizarOrden(ordenes){
 
         // Si es una ruta
         if(ordenes[i].tipo == "ruta"){
-            const collection = document.getElementById(ordenes[i].id);
 
             // Si existe un elemento con esa id lo eliminamos y creamos uno nuevo
             if(collection!=null){
