@@ -286,4 +286,5 @@ function guardarOrdenes(listaOrdenes) {
   ordenes = listaOrdenes;
   // Llamamos a redibujarPlano
   reDibujarPlano(c,ctx, ordenes);
+  actualizarOrden(ordenes);
 }
