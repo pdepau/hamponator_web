@@ -246,8 +246,6 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         reDibujarPlano(c,ctx, ordenes);
         actualizarOrden(ordenes);
       }
-      reDibujarPlano(c,ctx, ordenes);
-      actualizarOrden(ordenes);
     });
     
 });
