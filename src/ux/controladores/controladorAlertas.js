@@ -17,7 +17,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
     }
 
     var alertas = null;
-    alertas = recogerAlertas(body);
+    alertas = recogerAlertas();
 
     // Escuchador del boton de cerrar sesion
     document.getElementById("btn-cerrar-sesion").addEventListener("click", () => {

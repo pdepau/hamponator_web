@@ -380,36 +380,24 @@ function actualizarOrden(ordenes){
 
 /**
  * Recoge las predicciones de realtime y las añade en una lista
- * body -> recogerAlertas ->
+ * -> recogerAlertas ->
  */
-async function recogerAlertas(body){
-    // Hace una busqueda en la base de datos y recibe una lista de las alertas
-    var alertas = ["Test 1", "Test 2", "testFinal"];
-    
-    // Crea las alertas 
-    crearAlertas(alertas, body);
-}
+async function recogerAlertas(){
 
-/**
- * Recoge las predicciones de realtime y las añade en una lista
- * alertas -> crearAlertas ->
- */
-function crearAlertas(alertas){
-
+    var codigoVer = localStorage.getItem("CodigoVer");
+    let text = codigoVer+"-app"
+    let alertas = [];
+    let imagenes = [];
     // Recogemos las imagenes de realtime
-    get(storageRef(database, "-app")).then((snapshot) => {
+    get(storageRef(database, text)).then((snapshot) => {
         if (snapshot.exists()) {
             console.log(snapshot.val());
-            
-            // Añadimos las imagenes
-            var datos = snapshot.val().msg[0].images[0];
-            console.log(datos);
-            /*
-            var text = "FotoTest";
-            var element = document.createElement(text);
-            element.innerHTML = `<img src="${datos}">`;
-            document.body.appendChild(element);
-            */
+            var data = snapshot.val().msg;
+            data.forEach(elementos => {
+                console.log(elementos.label);
+                alertas.push(elementos.label);
+                imagenes.push(elementos.img);
+            });
 
             // Si existen alertas
             if(alertas != null){
@@ -433,7 +421,7 @@ function crearAlertas(alertas){
                                             </div>
                                             <div class="contenido">
                                             <div class="imagen">
-                                                <img class="imagenAlertas"src="${datos}">
+                                                <img class="imagenAlertas"src="${imagenes[i]}">
                                             </div>
                                             <div class="prediccion">
                                             ${alertas[i]}
@@ -444,7 +432,7 @@ function crearAlertas(alertas){
 
                     // Incluimos los identificadores en el local storage
                     var text = "imagenes"+i;
-                    localStorage.setItem(text, datos);
+                    localStorage.setItem(text, imagenes[i]);
                     var text = "alertasTexto"+i;
                     localStorage.setItem(text, alertas[i]);
                 }
@@ -452,10 +440,12 @@ function crearAlertas(alertas){
                 localStorage.setItem("alertas", lista);
                 
             }
-    
+        
         } else {
         console.log("No data available");
         }
+
+
     }).catch((error) => {
       console.error(error);
     });
