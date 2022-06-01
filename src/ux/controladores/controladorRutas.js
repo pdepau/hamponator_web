@@ -36,6 +36,7 @@ const eliminar = document.getElementById("eliminar");
 
 // Cuando la pagina cargue empezamos la funcion
 window.addEventListener("DOMContentLoaded", async (e) => {
+
   // Si la sesion no esta iniciada vuelves a la landing page
   var sesion = localStorage.getItem("SesionIniciada");
   var codigoVer = localStorage.getItem("CodigoVer");

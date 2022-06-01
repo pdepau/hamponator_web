@@ -451,4 +451,36 @@ async function recogerAlertas(){
     });
 }
 
-export { subirDatos, actualizarPlano, recogerImagen, dibujarRuta, dibujarCirculo, reDibujarPlano, subirRuta, recogerRuta, recogerAlertas, actualizarOrden};
+async function recogerDatosEmpresa(){
+
+    // Lo recogemos de database
+    const q = query(collection(db, "Empresas"));
+
+    var uid = localStorage.getItem("UID");
+
+    // Obtenemos los documentos en forma de objetos DocumentSnapshots
+    await getDocs(q).then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+
+            let valor = doc.data();
+            if(uid == valor.UID){
+                console.log(valor);
+                localStorage.setItem("Nombre", valor.Nombre);
+                localStorage.setItem("Direccion", valor.direccion);
+                localStorage.setItem("Poblacion", valor.municipio);
+                localStorage.setItem("Telefono", valor.telefono);
+                localStorage.setItem("Responsable", valor.responsable);
+                localStorage.setItem("NIF", valor.nif);
+                localStorage.setItem("Modelo", valor.modelo);
+                localStorage.setItem("Serie", valor.serie);
+                localStorage.setItem("SO", valor.so);
+
+            }
+
+        })
+
+        return;
+    }).catch(error => { });
+}
+
+export { subirDatos, actualizarPlano, recogerImagen, dibujarRuta, dibujarCirculo, reDibujarPlano, subirRuta, recogerRuta, recogerAlertas, actualizarOrden, recogerDatosEmpresa};
