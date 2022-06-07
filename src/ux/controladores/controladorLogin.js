@@ -10,7 +10,6 @@ import { iniciarSesion } from '../../logica/logicaAuth.js'
 window.addEventListener("DOMContentLoaded", async (e) => {
 
   // Cuando cargue la pagina se ejecutan las funciones
-
   firebaseAuth.onAuthStateChanged(firebaseAuth.getAuth(), function(user) {
     // Si el usuario esta registrado
     var sesion = localStorage.getItem("SesionIniciada");
@@ -20,7 +19,7 @@ window.addEventListener("DOMContentLoaded", async (e) => {
         var uid = user.uid;
         console.log(uid + "");
         localStorage.setItem("UID", uid);
-        recogerCodigo();
+        recogerCodigo(uid);
       }
       }
     });
@@ -29,11 +28,15 @@ window.addEventListener("DOMContentLoaded", async (e) => {
 
 function addButtonEventListeners() {
   document.getElementById("btn-iniciar-sesion").addEventListener("click", () => {
-  iniciarSesion()});
+    console.log("hola");
+    iniciarSesion()});
 }
 
-async function recogerCodigo(){
-  var uid = localStorage.getItem("UID");
+/**
+ * Se recoge el codigo de la base de datos
+ * uid -> recogerCodigo ->
+ */
+async function recogerCodigo(uid){
     const q = query(collection(db, "Empresas"), where('UID', '==', uid));
         // Obtenemos los documentos en forma de objetos DocumentSnapshots
     await getDocs(q).then(querySnapshot => {
@@ -51,7 +54,8 @@ async function recogerCodigo(){
 
         var codigo = localStorage.getItem("CodigoVer");
         if(codigo != null){
-        location.href = '../ux/rutas.html';
+          console.log(codigo);
+          location.href = '../ux/rutas.html';
         }
         return;
     }).catch(e => {

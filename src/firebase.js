@@ -29,8 +29,10 @@ const app = initializeApp(firebaseConfig);
 // Inicializar y exportar instancia de Firestore
 const db = getFirestore(app);
 
+// Inicializar y exportar instancia de Storage
 const dbStorage = getStorage(app);
 
+// Inicializar y exportar instancia de Database
 const database = getDatabase(app);
 
 export { db, dbStorage, database, collection, query, where, getDocs, firebaseAuth, getStorage, ref, uploadBytes, getDownloadURL, setDoc, doc, set, storageRef, get, child};
