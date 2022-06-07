@@ -73,6 +73,8 @@ function comprobarAlertas(alertas){
         if(collection!=null){
             collection.remove();
         }
+        console.log("aqui deberia salir la lista: ");
+        console.log(lista);
         var element = document.createElement(text);
 
             element.innerHTML =`<div class="divContenedorPDF">
@@ -91,11 +93,13 @@ function comprobarAlertas(alertas){
                                         </h3>
                                         </div>
                                         <div class = "descarga">
-                                        <button class = "botonDescarga" onclick="demoFromHTML()"> Descarga </button>
+                                        <button class = "botonDescarga" id="botonDescarga" onclick="demoFromHTML(${alertas.length},${lista})"> Descargar informe </button>
                                     </div>
                                 </div>
                                 </div>`;
         document.body.appendChild(element);
+        let botonDescarga=document.getElementById("botonDescarga");
+        botonDescarga.addEventListener('click',demoFromHTML(alertas.length,lista));
 
         // Se llama a incluir alertas para añadir al esqueleto final las alertas aceptadas
         incluirAlertas(alertas);
@@ -115,6 +119,8 @@ function incluirAlertas(alertas){
             
             var text = "AlertaFinal" + i;
             const collection = document.getElementById(text);
+            var textImagen = "imagen" + i;
+            
 
             // Si existe un elemento con esa id lo eliminamos y creamos uno nuevo
             if(collection!=null){
@@ -124,7 +130,7 @@ function incluirAlertas(alertas){
 
             element.innerHTML =`<div class="contenido">
                                     <div class="imagen">
-                                        <img class="imagenAlertas"src="${datosImagenes[i]}">
+                                        <img class="imagenAlertas" id="${textImagen}" src="${datosImagenes[i]}">
                                     </div>
                                     <div class="prediccion">
                                     <p>

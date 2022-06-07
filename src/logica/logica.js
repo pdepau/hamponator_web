@@ -383,16 +383,16 @@ function actualizarOrden(ordenes){
  * -> recogerAlertas ->
  */
 async function recogerAlertas(){
-
+ /*codigoVer+*/
     var codigoVer = localStorage.getItem("CodigoVer");
-    let text = codigoVer+"-app"
+    let text ="123456789-app"
     let alertas = [];
     let imagenes = [];
     // Recogemos las imagenes de realtime
     get(storageRef(database, text)).then((snapshot) => {
         if (snapshot.exists()) {
             console.log(snapshot.val());
-            var data = snapshot.val().msg;
+            var data = snapshot.val().msg.imagenes;
             data.forEach(elementos => {
                 console.log(elementos.label);
                 alertas.push(elementos.label);
@@ -421,7 +421,7 @@ async function recogerAlertas(){
                                             </div>
                                             <div class="contenido">
                                             <div class="imagen">
-                                                <img class="imagenAlertas"src="${imagenes[i]}">
+                                                <img class="imagenAlertas" src="${imagenes[i]}">
                                             </div>
                                             <div class="prediccion">
                                             ${alertas[i]}
