@@ -310,8 +310,8 @@ async function recogerRuta(orden, c, ctx, callback){
 
             orden = result.msg;
 
-            console.log("Orden recibido de Firebase:")
-            console.log(result)
+            //console.log("Orden recibido de Firebase:")
+            //console.log(result)
 
             // Las guardamos en controladorRutas
             callback(orden);
@@ -385,16 +385,16 @@ function actualizarOrden(ordenes){
 async function recogerAlertas(){
  /*codigoVer+*/
     var codigoVer = localStorage.getItem("CodigoVer");
-    let text ="123456789-app"
+    let text = codigoVer + "-app"
     let alertas = [];
     let imagenes = [];
     // Recogemos las imagenes de realtime
     get(storageRef(database, text)).then((snapshot) => {
         if (snapshot.exists()) {
-            console.log(snapshot.val());
-            var data = snapshot.val().msg.imagenes;
+            //console.log(snapshot.val());
+            var data = snapshot.val().msg.images;
             data.forEach(elementos => {
-                console.log(elementos.label);
+                //console.log(elementos);
                 alertas.push(elementos.label);
                 imagenes.push(elementos.img);
             });
@@ -464,7 +464,7 @@ async function recogerDatosEmpresa(){
 
             let valor = doc.data();
             if(uid == valor.UID){
-                console.log(valor);
+                //console.log(valor);
                 localStorage.setItem("Nombre", valor.Nombre);
                 localStorage.setItem("Direccion", valor.direccion);
                 localStorage.setItem("Poblacion", valor.municipio);
